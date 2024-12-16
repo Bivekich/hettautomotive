@@ -54,7 +54,7 @@ export default function Production() {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true }}
-      className="flex overflow-hidden flex-col px-80 pt-24 max-md:px-5"
+      className="flex overflow-hidden flex-col px-80 pt-24 max-md:px-5 pb-2"
     >
       <motion.h1
         variants={itemVariants}
