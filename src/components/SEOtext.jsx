@@ -10,7 +10,7 @@ export default function AboutUs() {
         transition={{ duration: 0.6 }}
         className="text-5xl font-bold leading-none max-md:max-w-full max-md:text-4xl"
       >
-        О производителе Hett Automotive
+        Заголовок SEO текста
       </motion.h1>
 
       <motion.div

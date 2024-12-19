@@ -89,12 +89,14 @@ function OnlineStore({ logo, title, url, logoWidth, logoAspect }) {
 
 function PhysicalStore({ name, description, url }) {
   return (
-    <div className="flex flex-col p-4 md:p-10 border border-solid border-zinc-400">
+    <div className="flex flex-col p-4 md:p-7 border border-solid border-zinc-400">
       <div className="text-xl md:text-2xl font-bold leading-tight text-neutral-900">
         {name}
       </div>
-      <div className="mt-3 md:mt-5 text-black">{description}</div>
-      <div className="mt-3 md:mt-5 text-green-600">{url}</div>
+      <div className="mt-1 text-black text-base md:text-xl">{description}</div>
+      <div className="mt-1 hover:text-green-700 transition-colors text-green-600 text-base md:text-xl">
+        {url}
+      </div>
     </div>
   );
 }
@@ -111,7 +113,7 @@ export default function WhereToBuy() {
         <h2 className="text-3xl md:text-4xl font-bold leading-none text-black">
           Онлайн
         </h2>
-        <div className="flex flex-wrap gap-5 md:gap-10 items-center mt-6 md:mt-10 w-full text-xl md:text-2xl">
+        <div className="flex flex-wrap gap-5 md:gap-20 items-center mt-6 md:mt-10 w-full text-xl md:text-2xl">
           {ONLINE_STORES.map((store) => (
             <OnlineStore key={store.id} {...store} />
           ))}

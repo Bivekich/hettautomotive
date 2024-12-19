@@ -11,11 +11,13 @@ import Banner from "./components/Banner";
 import AboutBanner from "./components/AboutBanner";
 import YandexMap from "./components/Map";
 import WhereToBuy from "./components/WhereToBuy";
+import SEOtext from "./components/SEOtext";
 import "./index.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import Loader from "./components/Loader";
+import ProductionMore from "./components/ProductionMore";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -77,7 +79,9 @@ function App() {
                     title="Продукция Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
                   />
-
+                  <ProductionMore />
+                  <SEOtext />
+                  <WhereToBuy />
                   <YandexMap />
                   <Footer />
                 </>
