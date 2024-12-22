@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="flex overflow-hidden flex-col px-80 pt-16 pb-10 bg-neutral-900 max-md:px-5">
+    <footer className="flex overflow-hidden flex-col px-80 pt-8 pb-10 bg-neutral-900 max-md:px-5">
       {/* Top Section with Logo and Contact */}
       <div className="flex flex-wrap gap-10 justify-between items-center w-full min-h-[83px] max-md:max-w-full">
         {/* Logo Section */}
@@ -42,37 +42,13 @@ export default function Footer() {
       </div>
 
       {/* Main Footer Content */}
-      <div className="flex flex-wrap gap-10 items-start mt-20 w-full max-md:mt-10 max-md:max-w-full">
+      <div className="flex flex-wrap gap-10 items-start mt-10 w-full max-md:mt-10 max-md:max-w-full">
         {/* Products Column */}
         <div className="flex flex-col flex-1 shrink basis-0 min-w-[240px]">
           <h3 className="text-xl font-bold leading-none text-white">
             Продукция
           </h3>
           <nav className="flex flex-col mt-8 w-full text-base leading-snug text-gray-400">
-            <div className="hover:text-hett-1 transition-colors cursor-pointer">
-              Аккумуляторы
-            </div>
-            <div className="mt-4 hover:text-hett-1 transition-colors cursor-pointer">
-              Кузовные элементы
-            </div>
-            <div className="mt-4 hover:text-hett-1 transition-colors cursor-pointer">
-              Моторные и трансмиссионные масла
-            </div>
-            <div className="mt-4 hover:text-hett-1 transition-colors cursor-pointer">
-              Автомобильные диски и шины
-            </div>
-            <div className="mt-4 hover:text-hett-1 transition-colors cursor-pointer">
-              Запасные части для ходовой части
-            </div>
-            <div className="mt-4 hover:text-hett-1 transition-colors cursor-pointer">
-              Автомобильные аксессуары
-            </div>
-          </nav>
-        </div>
-
-        {/* Additional Products Column */}
-        <div className="flex flex-col flex-1 shrink pt-14 text-base leading-snug text-gray-400 basis-0 min-w-[240px]">
-          <nav>
             <div className="hover:text-hett-1 transition-colors cursor-pointer">
               Аккумуляторы
             </div>

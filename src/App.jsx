@@ -18,6 +18,7 @@ import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import Loader from "./components/Loader";
 import ProductionMore from "./components/ProductionMore";
+import NewsPage from "./components/NewsPage";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -96,7 +97,7 @@ function App() {
                     title="Новости компании Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
                   />
-
+                  <NewsPage />
                   <YandexMap />
                   <Footer />
                 </>
