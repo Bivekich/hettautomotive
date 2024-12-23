@@ -19,7 +19,8 @@ import { AnimatePresence } from "framer-motion";
 import Loader from "./components/Loader";
 import ProductionMore from "./components/ProductionMore";
 import NewsPage from "./components/NewsPage";
-
+import ContactPage from "./components/ContactPage";
+import ContactForm from "./components/ContactForm";
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -112,8 +113,8 @@ function App() {
                     title="Контактная информация"
                     subtitle="Подзаголовок для краткой информации"
                   />
-
-                  <YandexMap />
+                  <ContactPage />
+                  <ContactForm />
                   <Footer />
                 </>
               }

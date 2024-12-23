@@ -129,7 +129,7 @@ export default function News() {
           whileInView="visible"
           viewport={{ once: true }}
           className="flex flex-col flex-1 shrink basis-0 min-w-[240px] max-md:max-w-full"
-        >
+        > 
           {NEWS_ITEMS.map((item, index) => (
             <div key={item.id} className={index > 0 ? "mt-8" : ""}>
               <NewsItem {...item} />
