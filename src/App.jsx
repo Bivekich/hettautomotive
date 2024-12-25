@@ -16,11 +16,13 @@ import "./index.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
+import Catalog from "./components/Catalog";
 import Loader from "./components/Loader";
 import ProductionMore from "./components/ProductionMore";
 import NewsPage from "./components/NewsPage";
 import ContactPage from "./components/ContactPage";
 import ContactForm from "./components/ContactForm";
+
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -38,13 +40,12 @@ function App() {
         <Loader key="loader" />
       ) : (
         <Router>
+          <Header />
           <Routes>
             <Route
               path="/"
               element={
                 <>
-                  {" "}
-                  <Header />
                   <Banner />
                   <AboutUs />
                   <Production />
@@ -52,7 +53,6 @@ function App() {
                   <Geography />
                   <News />
                   <Products />
-                  <Footer />
                 </>
               }
             />
@@ -60,7 +60,6 @@ function App() {
               path="/about"
               element={
                 <>
-                  <Header />
                   <AboutBanner
                     title="О компании Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
@@ -68,7 +67,6 @@ function App() {
                   <AboutUs />
                   <WhereToBuy />
                   <YandexMap />
-                  <Footer />
                 </>
               }
             />
@@ -76,7 +74,6 @@ function App() {
               path="/products"
               element={
                 <>
-                  <Header />
                   <AboutBanner
                     title="Продукция Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
@@ -85,22 +82,19 @@ function App() {
                   <SEOtext />
                   <WhereToBuy />
                   <YandexMap />
-                  <Footer />
                 </>
               }
-            />{" "}
+            />
             <Route
               path="/news"
               element={
                 <>
-                  <Header />
                   <AboutBanner
                     title="Новости компании Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
                   />
                   <NewsPage />
                   <YandexMap />
-                  <Footer />
                 </>
               }
             />
@@ -108,14 +102,12 @@ function App() {
               path="/contacts"
               element={
                 <>
-                  <Header />
                   <AboutBanner
                     title="Контактная информация"
                     subtitle="Подзаголовок для краткой информации"
                   />
                   <ContactPage />
                   <ContactForm />
-                  <Footer />
                 </>
               }
             />
@@ -123,17 +115,24 @@ function App() {
               path="/search"
               element={
                 <>
-                  <Header />
                   <AboutBanner
                     title="Аккумуляторы Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
                   />
                   <YandexMap />
-                  <Footer />
+                </>
+              }
+            />
+            <Route
+              path="/catalog"
+              element={
+                <>
+                  <Catalog />
                 </>
               }
             />
           </Routes>
+          <Footer />
         </Router>
       )}
     </AnimatePresence>
