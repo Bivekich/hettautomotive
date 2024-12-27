@@ -1,6 +1,6 @@
 export default function AboutBanner({ title, subtitle }) {
   return (
-    <section className="relative flex flex-col px-80 pt-60 pb-16 max-md:px-5 max-md:pt-24 min-h-[400px]">
+    <section className="relative flex flex-col px-80 pt-60 pb-16 max-md:px-5 max-md:pt-24 min-h-[400px] max-w-[2200px] mx-auto">
       {/* Background Image */}
       <img
         loading="lazy"

@@ -50,12 +50,13 @@ const Banner = () => {
   ];
 
   return (
-    <div className="flex items-center h-[650px] overflow-hidden">
-      {slides.map((slide, index) => (
-        <div
-          key={index}
-          onClick={() => handleSlideClick(index)}
-          className={`
+    <div className="max-w-[2200px] mx-auto">
+      <div className="flex items-center h-[650px] overflow-hidden">
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            onClick={() => handleSlideClick(index)}
+            className={`
             flex relative flex-col cursor-pointer transition-all duration-500 h-full overflow-hidden
             ${
               activeSlide === index
@@ -63,70 +64,71 @@ const Banner = () => {
                 : "w-40 flex-col justify-between self-stretch px-16 pt-16 my-auto text-zinc-300"
             }
           `}
-        >
-          <img
-            loading="lazy"
-            srcSet={slide.srcSet}
-            src={slide.backgroundImage}
-            alt={`Slide ${slide.number}`}
-            className={`absolute inset-0 w-full h-full object-cover`}
-          />
-
-          {activeSlide !== index && (
-            <div className="absolute inset-0 bg-black/50 hover:bg-black/30 transition-colors duration-300" />
-          )}
-
-          <div
-            className={`relative z-10 ${
-              activeSlide === index ? "max-w-[950px]" : ""
-            }`}
           >
+            <img
+              loading="lazy"
+              srcSet={slide.srcSet}
+              src={slide.backgroundImage}
+              alt={`Slide ${slide.number}`}
+              className={`absolute inset-0 w-full h-full object-cover`}
+            />
+
+            {activeSlide !== index && (
+              <div className="absolute inset-0 bg-black/50 hover:bg-black/30 transition-colors duration-300" />
+            )}
+
             <div
-              className={`text-4xl font-bold ${
-                activeSlide === index ? "text-neutral-100" : "text-zinc-300"
+              className={`relative z-10 ${
+                activeSlide === index ? "max-w-[950px]" : ""
               }`}
             >
-              {slide.number}
-            </div>
-
-            {activeSlide === index && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="flex flex-col mt-44 w-full max-md:mt-10 max-md:max-w-full"
+              <div
+                className={`text-4xl font-bold ${
+                  activeSlide === index ? "text-neutral-100" : "text-zinc-300"
+                }`}
               >
+                {slide.number}
+              </div>
+
+              {activeSlide === index && (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-2xl font-bold leading-none text-neutral-100 max-md:max-w-full"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="flex flex-col mt-44 w-full max-md:mt-10 max-md:max-w-full"
                 >
-                  {slide.subtitle}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-2xl font-bold leading-none text-neutral-100 max-md:max-w-full"
+                  >
+                    {slide.subtitle}
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="mt-10 text-5xl font-bold leading-[60px] text-neutral-100 max-md:max-w-full max-md:text-4xl max-md:leading-10"
+                  >
+                    {slide.title}
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex gap-2 items-center self-start px-8 py-4 mt-10 bg-hett-1 hover:bg-green-600 transition-colors"
+                  >
+                    <div className="self-stretch my-auto text-lg font-semibold leading-tight text-white">
+                      Подробнее
+                    </div>
+                    <FaArrowRight className="text-white" />
+                  </motion.div>
                 </motion.div>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="mt-10 text-5xl font-bold leading-[60px] text-neutral-100 max-md:max-w-full max-md:text-4xl max-md:leading-10"
-                >
-                  {slide.title}
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex gap-2 items-center self-start px-8 py-4 mt-10 bg-hett-1 hover:bg-green-600 transition-colors"
-                >
-                  <div className="self-stretch my-auto text-lg font-semibold leading-tight text-white">
-                    Подробнее
-                  </div>
-                  <FaArrowRight className="text-white" />
-                </motion.div>
-              </motion.div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

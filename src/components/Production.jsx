@@ -72,12 +72,7 @@ export default function Production() {
             key={category.title}
             variants={itemVariants}
             whileHover={{ scale: 1.02 }}
-            className={`flex flex-col grow shrink-0 items-center px-7 py-8 w-1/5 min-w-[240px] max-md:px-5 
-              ${
-                index === PRODUCT_CATEGORIES.length - 1
-                  ? "border border-solid border-zinc-400"
-                  : "border-t border-b border-l border-zinc-400"
-              }`}
+            className={`flex flex-col grow shrink-0 items-center px-7 py-8 w-1/5 min-w-[240px] max-md:px-5 border border-zinc-400 bg-white`}
           >
             <div className="flex flex-col justify-center items-center  h-[140px] w-full">
               <div className="flex flex-col justify-center items-center px-5 py-8 bg-white w-full h-full max-md:px-5">

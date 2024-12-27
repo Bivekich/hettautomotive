@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 const PRODUCTS = [
   {
     id: 1,
@@ -40,7 +42,13 @@ function ProductSection({
   hasGrayBackground,
 }) {
   const ImageComponent = () => (
-    <div className="flex flex-col self-stretch my-auto min-w-[240px] w-[620px] max-md:max-w-full">
+    <motion.div
+      initial={{ opacity: 0, x: imagePosition === "left" ? -50 : 50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className="flex flex-col self-stretch my-auto min-w-[240px] w-[620px] max-md:max-w-full"
+    >
       {image ? (
         <div
           className={
@@ -49,7 +57,11 @@ function ProductSection({
               : ""
           }
         >
-          <img
+          <motion.img
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
             loading="lazy"
             srcSet={`${image}?width=100 100w, ${image}?width=200 200w, ${image}?width=400 400w, ${image}?width=800 800w, ${image}?width=1200 1200w, ${image}?width=1600 1600w, ${image}?width=2000 2000w`}
             alt={title}
@@ -59,18 +71,40 @@ function ProductSection({
       ) : (
         <div className="flex shrink-0 bg-gray-200 h-[460px] max-md:max-w-full" />
       )}
-    </div>
+    </motion.div>
   );
 
   const ContentComponent = () => (
-    <div className="flex flex-col flex-1 shrink self-stretch my-auto basis-0 min-w-[240px] max-md:max-w-full">
-      <h2 className="text-4xl font-bold leading-none text-black max-md:max-w-full">
+    <motion.div
+      initial={{ opacity: 0, x: imagePosition === "left" ? 50 : -50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className="flex flex-col flex-1 shrink self-stretch my-auto basis-0 min-w-[240px] max-md:max-w-full"
+    >
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="text-4xl font-bold leading-none text-black max-md:max-w-full"
+      >
         {title}
-      </h2>
-      <p className="mt-16 text-2xl leading-8 text-black max-md:mt-10 max-md:max-w-full">
+      </motion.h2>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mt-16 text-2xl leading-8 text-black max-md:mt-10 max-md:max-w-full"
+      >
         {description}
-      </p>
-      <button className="flex gap-2 items-center self-start px-8 py-4 mt-16 bg-hett-1 min-h-[60px] max-md:px-5 max-md:mt-10">
+      </motion.p>
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="flex gap-2 items-center self-start px-8 py-4 mt-16 bg-hett-1 min-h-[60px] max-md:px-5 max-md:mt-10 hover:bg-green-600 transition-all"
+      >
         <span className="self-stretch my-auto text-lg font-semibold leading-tight text-white">
           {buttonText}
         </span>
@@ -82,12 +116,18 @@ function ProductSection({
             className="object-contain self-stretch my-auto w-2.5 aspect-[1.11]"
           />
         </div>
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 
   return (
-    <div className="flex flex-wrap gap-10 items-center mt-16 w-full max-md:mt-10 max-md:max-w-full">
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+      className="flex flex-wrap gap-10 items-center mt-16 w-full max-md:mt-10 max-md:max-w-full"
+    >
       {imagePosition === "left" ? (
         <>
           <ImageComponent />
@@ -99,16 +139,22 @@ function ProductSection({
           <ImageComponent />
         </>
       )}
-    </div>
+    </motion.div>
   );
 }
 
 export default function Products() {
   return (
     <section className="flex overflow-hidden flex-col px-80 py-24 max-md:px-5">
-      <h1 className="text-5xl font-bold leading-none text-black max-md:max-w-full max-md:text-4xl">
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="text-5xl font-bold leading-none text-black max-md:max-w-full max-md:text-4xl"
+      >
         Продукция
-      </h1>
+      </motion.h1>
 
       {PRODUCTS.map((product) => (
         <ProductSection key={product.id} {...product} />

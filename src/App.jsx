@@ -22,6 +22,7 @@ import ProductionMore from "./components/ProductionMore";
 import NewsPage from "./components/NewsPage";
 import ContactPage from "./components/ContactPage";
 import ContactForm from "./components/ContactForm";
+import Container from "./components/Container";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -47,12 +48,16 @@ function App() {
               element={
                 <>
                   <Banner />
-                  <AboutUs />
-                  <Production />
-                  <Advantages />
+                  <Container>
+                    <AboutUs />
+                    <Production />
+                    <Advantages />
+                  </Container>
                   <Geography />
                   <News />
-                  <Products />
+                  <Container>
+                    <Products />
+                  </Container>
                 </>
               }
             />
@@ -64,9 +69,11 @@ function App() {
                     title="О компании Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
                   />
-                  <AboutUs />
-                  <WhereToBuy />
-                  <YandexMap />
+                  <Container>
+                    <AboutUs />
+                    <WhereToBuy />
+                    <YandexMap />
+                  </Container>
                 </>
               }
             />
@@ -78,10 +85,12 @@ function App() {
                     title="Продукция Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
                   />
-                  <ProductionMore />
-                  <SEOtext />
-                  <WhereToBuy />
-                  <YandexMap />
+                  <Container>
+                    <ProductionMore />
+                    <SEOtext />
+                    <WhereToBuy />
+                    <YandexMap />
+                  </Container>
                 </>
               }
             />
@@ -93,8 +102,10 @@ function App() {
                     title="Новости компании Hett Automotive"
                     subtitle="Подзаголовок для краткой информации"
                   />
-                  <NewsPage />
-                  <YandexMap />
+                  <Container>
+                    <NewsPage />
+                    <YandexMap />
+                  </Container>
                 </>
               }
             />
@@ -106,8 +117,10 @@ function App() {
                     title="Контактная информация"
                     subtitle="Подзаголовок для краткой информации"
                   />
-                  <ContactPage />
-                  <ContactForm />
+                  <Container>
+                    <ContactPage />
+                    <ContactForm />
+                  </Container>
                 </>
               }
             />
