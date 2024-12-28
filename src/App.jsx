@@ -23,6 +23,7 @@ import NewsPage from "./components/NewsPage";
 import ContactPage from "./components/ContactPage";
 import ContactForm from "./components/ContactForm";
 import Container from "./components/Container";
+import NewsCatalog from "./components/NewsCatalog";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -103,7 +104,7 @@ function App() {
                     subtitle="Подзаголовок для краткой информации"
                   />
                   <Container>
-                    <NewsPage />
+                    <NewsCatalog />
                     <YandexMap />
                   </Container>
                 </>
@@ -121,18 +122,6 @@ function App() {
                     <ContactPage />
                     <ContactForm />
                   </Container>
-                </>
-              }
-            />
-            <Route
-              path="/search"
-              element={
-                <>
-                  <AboutBanner
-                    title="Аккумуляторы Hett Automotive"
-                    subtitle="Подзаголовок для краткой информации"
-                  />
-                  <YandexMap />
                 </>
               }
             />

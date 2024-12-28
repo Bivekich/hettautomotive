@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const PRODUCT_CATEGORIES = [
   {
@@ -34,6 +35,8 @@ const PRODUCT_CATEGORIES = [
 ];
 
 export default function Production() {
+  const navigate = useNavigate();
+
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -47,6 +50,10 @@ export default function Production() {
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
+  };
+
+  const handleCategoryClick = (category) => {
+    navigate(`/catalog?category=${category}`);
   };
 
   return (
@@ -72,9 +79,10 @@ export default function Production() {
             key={category.title}
             variants={itemVariants}
             whileHover={{ scale: 1.02 }}
-            className={`flex flex-col grow shrink-0 items-center px-7 py-8 w-1/5 min-w-[240px] max-md:px-5 border border-zinc-400 bg-white`}
+            onClick={() => handleCategoryClick(category.category)}
+            className={`flex flex-col grow shrink-0 items-center px-7 py-8 w-1/5 min-w-[240px] max-md:px-5 border border-zinc-400 bg-white cursor-pointer`}
           >
-            <div className="flex flex-col justify-center items-center  h-[140px] w-full">
+            <div className="flex flex-col justify-center items-center h-[140px] w-full">
               <div className="flex flex-col justify-center items-center px-5 py-8 bg-white w-full h-full max-md:px-5">
                 <img
                   loading="lazy"

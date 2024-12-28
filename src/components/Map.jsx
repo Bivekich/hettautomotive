@@ -1,7 +1,20 @@
 export default function YandexMap() {
   return (
-    <div className="flex overflow-hidden flex-col px-80 max-md:px-5">
-      <h1 className="text-4xl font-bold leading-none text-black max-md:max-w-full">
+    <div
+      className="flex overflow-hidden flex-col px-80 
+      2xl:px-80
+      xl:px-60
+      lg:px-40
+      md:px-20
+      max-md:px-5"
+    >
+      <h1
+        className="text-4xl font-bold leading-none text-black 
+        xl:text-4xl
+        lg:text-3xl
+        md:text-2xl
+        max-md:text-2xl"
+      >
         Магазин на карте
       </h1>
       <iframe
@@ -10,7 +23,7 @@ export default function YandexMap() {
         height="500"
         frameBorder="0"
         title="Hett Automotive Map"
-        className="mt-10 w-full"
+        className="mt-10 w-full max-md:mt-6"
       />
     </div>
   );

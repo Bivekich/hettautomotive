@@ -51,19 +51,19 @@ const Banner = () => {
 
   return (
     <div className="max-w-[2200px] mx-auto">
-      <div className="flex items-center h-[650px] overflow-hidden">
+      <div className="flex md:flex-row flex-col items-stretch md:items-center h-auto md:h-[650px] overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={index}
             onClick={() => handleSlideClick(index)}
             className={`
-            flex relative flex-col cursor-pointer transition-all duration-500 h-full overflow-hidden
-            ${
-              activeSlide === index
-                ? "flex-1 shrink self-stretch px-80 py-16 my-auto basis-0 min-w-[240px] max-md:px-5 max-md:max-w-full"
-                : "w-40 flex-col justify-between self-stretch px-16 pt-16 my-auto text-zinc-300"
-            }
-          `}
+              flex relative flex-col cursor-pointer transition-all duration-500 overflow-hidden
+              ${
+                activeSlide === index
+                  ? "flex-1 shrink self-stretch px-5 md:px-80 py-16 basis-0 min-h-[500px] md:min-h-0 min-w-0 md:min-w-[240px]"
+                  : "h-20 md:h-auto md:w-40 flex-col justify-between self-stretch px-5 md:px-16 pt-5 md:pt-16 text-zinc-300"
+              }
+            `}
           >
             <img
               loading="lazy"
@@ -80,14 +80,19 @@ const Banner = () => {
             <div
               className={`relative z-10 ${
                 activeSlide === index ? "max-w-[950px]" : ""
-              }`}
+              } ${activeSlide === index && index > 0 ? "-ml-0 md:-ml-40" : ""}`}
             >
               <div
-                className={`text-4xl font-bold ${
+                className={`text-2xl md:text-4xl font-bold flex items-center justify-between ${
                   activeSlide === index ? "text-neutral-100" : "text-zinc-300"
                 }`}
               >
                 {slide.number}
+                {activeSlide !== index && (
+                  <span className="ml-2 text-base md:text-lg">
+                    {slide.subtitle}
+                  </span>
+                )}
               </div>
 
               {activeSlide === index && (
@@ -95,13 +100,13 @@ const Banner = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="flex flex-col mt-44 w-full max-md:mt-10 max-md:max-w-full"
+                  className="flex flex-col mt-8 md:mt-44 w-full max-md:mt-10"
                 >
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="text-2xl font-bold leading-none text-neutral-100 max-md:max-w-full"
+                    className="text-xl md:text-2xl font-bold leading-none text-neutral-100"
                   >
                     {slide.subtitle}
                   </motion.div>
@@ -109,16 +114,16 @@ const Banner = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="mt-10 text-5xl font-bold leading-[60px] text-neutral-100 max-md:max-w-full max-md:text-4xl max-md:leading-10"
+                    className="mt-6 md:mt-10 text-3xl md:text-5xl font-bold leading-tight md:leading-[60px] text-neutral-100"
                   >
                     {slide.title}
                   </motion.div>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex gap-2 items-center self-start px-8 py-4 mt-10 bg-hett-1 hover:bg-green-600 transition-colors"
+                    className="flex gap-2 items-center self-start px-6 md:px-8 py-3 md:py-4 mt-6 md:mt-10 bg-hett-1 hover:bg-green-600 transition-colors"
                   >
-                    <div className="self-stretch my-auto text-lg font-semibold leading-tight text-white">
+                    <div className="self-stretch my-auto text-base md:text-lg font-semibold leading-tight text-white">
                       Подробнее
                     </div>
                     <FaArrowRight className="text-white" />

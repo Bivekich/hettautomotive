@@ -9,6 +9,9 @@ export default {
           2: "#E8F9E8",
         },
       },
+      fontFamily: {
+        "roboto-condensed": ['"Roboto Condensed"', "serif"],
+      },
     },
   },
   plugins: [],
