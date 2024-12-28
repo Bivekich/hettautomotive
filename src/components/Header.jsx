@@ -16,16 +16,13 @@ function MobileMenu({ isOpen, onClose }) {
     <div
       ref={menuRef}
       className={`
-        fixed left-0 right-0 bg-black
+        absolute left-0 right-0 bg-black
         transform transition-all duration-300 ease-in-out
         ${isOpen ? "max-h-[400px]" : "max-h-0"}
         overflow-hidden
         md:hidden
         z-50
       `}
-      style={{
-        top: "124px", // Adjusted to be under the burger menu
-      }}
     >
       <nav className="flex flex-col p-4">
         <div
@@ -96,9 +93,9 @@ export default function Header() {
     <Container>
       <header ref={headerRef} className="flex flex-col mt-4 sm:mt-6 md:mt-10">
         {/* Top Bar */}
-        <div className="flex flex-col px-4 sm:px-8 md:px-16 lg:px-40 xl:px-80 w-full">
+        <div className="flex flex-col md:flex-row px-4 sm:px-8 md:px-16 lg:px-40 xl:px-80 w-full">
           {/* Logo and Burger Row */}
-          <div className="flex justify-between items-center w-full">
+          <div className="flex justify-between items-center w-full md:w-auto">
             {/* Logo Section */}
             <div
               className="flex overflow-hidden gap-4 md:gap-6 items-center self-stretch pl-3 sm:pl-4 md:pl-5 my-auto bg-black h-[60px] sm:h-[70px] md:h-[83px] min-w-[200px] hover:opacity-90 transition-opacity cursor-pointer"
@@ -133,7 +130,7 @@ export default function Header() {
           </div>
 
           {/* Contact Info Row */}
-          <div className="flex justify-end py-4">
+          <div className="flex justify-end py-4 md:py-0 md:flex-1 md:items-center">
             <div className="flex gap-4 sm:gap-6 md:gap-8 items-center text-base sm:text-md font-bold leading-relaxed uppercase text-neutral-600">
               <div className="hover:text-hett-1 transition-colors cursor-pointer whitespace-nowrap">
                 +7 (495) 260 20 60
@@ -157,7 +154,7 @@ export default function Header() {
         </div>
 
         {/* Navigation Bar - Hidden on Mobile */}
-        <nav className="hidden md:flex flex-wrap gap-4 sm:gap-6 md:gap-10 justify-between roboto-condensed-bold items-center px-4 sm:px-8 md:px-16 lg:px-40 xl:px-80 pb-4 sm:pb-6 md:pb-8 w-full text-sm sm:text-md font-bold leading-relaxed uppercase">
+        <nav className="hidden md:flex flex-wrap gap-4 sm:gap-6 md:gap-10 justify-between roboto-condensed-bold items-center px-4 sm:px-8 md:px-16 lg:px-40 xl:px-80 pb- sm:pb-6 md:py-5 w-full text-sm sm:text-md font-bold leading-relaxed uppercase">
           {/* Navigation Links - Hidden on Mobile */}
           <div className="hidden md:flex gap-6 lg:gap-10 items-center self-stretch my-auto text-neutral-600">
             <div

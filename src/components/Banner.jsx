@@ -89,7 +89,7 @@ const Banner = () => {
               >
                 {slide.number}
                 {activeSlide !== index && (
-                  <span className="ml-2 text-base md:text-lg">
+                  <span className="md:hidden ml-2 text-base md:text-lg">
                     {slide.subtitle}
                   </span>
                 )}
