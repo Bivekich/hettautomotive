@@ -2,15 +2,17 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Копируем package.json и package-lock.json
-COPY package*.json ./
+# Создаем пользователя node
+USER node
 
-# Устанавливаем зависимости и vite глобально
+# Копируем package.json и package-lock.json
+COPY --chown=node:node package*.json ./
+
+# Устанавливаем зависимости
 RUN npm install
-RUN npm install -g vite
 
 # Копируем исходный код
-COPY . .
+COPY --chown=node:node . .
 
 EXPOSE 5173
 
