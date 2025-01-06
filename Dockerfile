@@ -2,7 +2,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Создаем пользователя node
+# Создаем и настраиваем пользователя node
+RUN chown -R node:node /app
+
 USER node
 
 # Копируем package.json и package-lock.json
