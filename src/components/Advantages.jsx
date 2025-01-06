@@ -1,6 +1,35 @@
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { getAdvantageData } from "../services/api";
 
 export default function CompanyIntro() {
+  const [advantageData, setAdvantageData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAdvantageData = async () => {
+      try {
+        const data = await getAdvantageData();
+        console.log("Advantage data:", data);
+        if (data.data) {
+          setAdvantageData(data.data);
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching advantage data:", err);
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    fetchAdvantageData();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!advantageData) return <div>No advantage data available</div>;
+
   return (
     <section
       className="flex overflow-hidden flex-col pt-24 pb-10 pl-80 text-black pr-[650px]
@@ -21,7 +50,7 @@ export default function CompanyIntro() {
           md:text-3xl
           max-md:text-2xl"
       >
-        Hett Automotive
+        {advantageData.title}
       </motion.h1>
 
       <motion.p
@@ -35,9 +64,7 @@ export default function CompanyIntro() {
           md:text-lg md:mt-10
           max-md:mt-8 max-md:text-base"
       >
-        Одним из главных преимуществ Hett Automotive является её надёжность.
-        Клиенты могут быть уверены в том, что они получат качественные
-        автозапчасти, которые прослужат им долгое время.
+        {advantageData.description}
       </motion.p>
     </section>
   );

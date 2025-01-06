@@ -1,6 +1,35 @@
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { getAboutData } from "../services/api";
 
 export default function AboutUs() {
+  const [aboutData, setAboutData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        const data = await getAboutData();
+        console.log("About data:", data);
+        if (data.data && data.data.length > 0) {
+          setAboutData(data.data[0]);
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching about data:", err);
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    fetchAboutData();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!aboutData) return <div>No about data available</div>;
+
   return (
     <section
       className="flex overflow-hidden flex-col pt-24 pl-80 text-black pr-[600px] 
@@ -21,7 +50,7 @@ export default function AboutUs() {
           md:text-3xl
           max-md:text-2xl"
       >
-        О производителе Hett Automotive
+        {aboutData.title}
       </motion.h1>
 
       <motion.div
@@ -41,10 +70,7 @@ export default function AboutUs() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          Hett Automotive стремится предоставлять своим клиентам качественные
-          автозапчасти по доступным ценам. Компания постоянно работает над
-          улучшением своей продукции и расширением ассортимента, чтобы
-          удовлетворить потребности автовладельцев.
+          {aboutData.mainText}
         </motion.p>
 
         <motion.p
@@ -54,9 +80,7 @@ export default function AboutUs() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-8 max-md:mt-6"
         >
-          Одним из главных преимуществ Hett Automotive является её надёжность.
-          Клиенты могут быть уверены в том, что они получат качественные
-          автозапчасти, которые прослужат им долгое время.
+          {aboutData.additionalText}
         </motion.p>
       </motion.div>
     </section>

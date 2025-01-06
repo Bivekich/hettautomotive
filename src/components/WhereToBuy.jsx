@@ -1,107 +1,85 @@
-const ONLINE_STORES = [
-  {
-    id: 1,
-    logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/575e22350852dd2d1d965dc149da403fa41b4752f6c9a5b6a88ee75e263c7032",
-    title: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-    logoWidth: "201px",
-    logoAspect: "2.48",
-  },
-  {
-    id: 2,
-    logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/5add29fc08c831d66a8652f4c143905954414d3aef40a7eae2fb2840a1cd4ae9",
-    title: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-    logoWidth: "248px",
-    logoAspect: "3.06",
-  },
-  {
-    id: 3,
-    logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/575e22350852dd2d1d965dc149da403fa41b4752f6c9a5b6a88ee75e263c7032",
-    title: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-    logoWidth: "201px",
-    logoAspect: "2.48",
-  },
-  {
-    id: 4,
-    logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/5add29fc08c831d66a8652f4c143905954414d3aef40a7eae2fb2840a1cd4ae9",
-    title: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-    logoWidth: "248px",
-    logoAspect: "3.06",
-  },
-];
-
-const PHYSICAL_STORES = [
-  {
-    id: 1,
-    name: "Название магазина 1",
-    description: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-  },
-  {
-    id: 2,
-    name: "Название магазина 1",
-    description: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-  },
-  {
-    id: 3,
-    name: "Название магазина 1",
-    description: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-  },
-  {
-    id: 4,
-    name: "Название магазина 1",
-    description: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-  },
-  {
-    id: 5,
-    name: "Название магазина 1",
-    description: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-  },
-  {
-    id: 6,
-    name: "Название магазина 1",
-    description: "Интернет-магазин автозапчастей",
-    url: "https://exist.ru/",
-  },
-];
+import { useState, useEffect } from "react";
+import { getOnlineStores, getPhysicalStores } from "../services/api";
 
 function OnlineStore({ logo, title, url, logoWidth, logoAspect }) {
   return (
-    <div className="flex flex-col flex-1 shrink self-stretch my-auto basis-0 min-w-[240px]">
-      <img
-        loading="lazy"
-        srcSet={`${logo}?width=100 100w, ${logo}?width=2000 2000w`}
-        className={`object-contain max-w-full aspect-[${logoAspect}] w-[${logoWidth}]`}
-        alt={title}
-      />
+    <div className="flex flex-col flex-1 shrink self-stretch my-auto basis-0 min-w-[240px] max-w-[300px]">
+      <div className="flex justify-start">
+        <img
+          loading="lazy"
+          src={`${import.meta.env.VITE_STRAPI_API_URL}${logo?.url}`}
+          className={`object-contain max-w-full`}
+          alt={title}
+        />
+      </div>
       <div className="mt-5 leading-8 text-black">{title}</div>
-      <div className="mt-5 leading-snug text-green-600">{url}</div>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-5 leading-snug text-green-600 hover:text-green-700 transition-colors"
+      >
+        {url}
+      </a>
     </div>
   );
 }
 
-function PhysicalStore({ name, description, url }) {
+function PhysicalStore({ name, description, link }) {
   return (
     <div className="flex flex-col p-4 md:p-7 border border-solid border-zinc-400">
       <div className="text-xl md:text-2xl font-bold leading-tight text-neutral-900">
         {name}
       </div>
       <div className="mt-1 text-black text-base md:text-xl">{description}</div>
-      <div className="mt-1 hover:text-green-700 transition-colors text-green-600 text-base md:text-xl">
-        {url}
-      </div>
+      {link && (
+        <div className="mt-1 hover:text-green-700 transition-colors text-green-600 text-base md:text-xl">
+          {link}
+        </div>
+      )}
     </div>
   );
 }
 
 export default function WhereToBuy() {
+  const [onlineStores, setOnlineStores] = useState([]);
+  const [physicalStores, setPhysicalStores] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("Москва");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Get unique cities from physical stores
+  const cities = [...new Set(physicalStores.map((store) => store.city))];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [onlineData, physicalData] = await Promise.all([
+          getOnlineStores(),
+          getPhysicalStores(),
+        ]);
+
+        setOnlineStores(onlineData.data);
+        setPhysicalStores(physicalData.data);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching stores data:", err);
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  const filteredStores = physicalStores.filter(
+    (store) => store.city === selectedCity
+  );
+
   return (
     <div className="flex overflow-hidden flex-col px-5 md:px-20 lg:px-80 pt-24 pb-10">
       <h1 className="text-4xl md:text-5xl font-bold leading-none text-black">
@@ -114,8 +92,15 @@ export default function WhereToBuy() {
           Онлайн
         </h2>
         <div className="flex flex-wrap gap-5 md:gap-20 items-center mt-6 md:mt-10 w-full text-xl md:text-2xl">
-          {ONLINE_STORES.map((store) => (
-            <OnlineStore key={store.id} {...store} />
+          {onlineStores.map((store) => (
+            <OnlineStore
+              key={store.id}
+              logo={store.logo}
+              title={store.title}
+              url={store.url}
+              logoWidth={store.logoWidth}
+              logoAspect={store.logoAspect}
+            />
           ))}
         </div>
       </div>
@@ -126,19 +111,50 @@ export default function WhereToBuy() {
           Адреса магазинов
         </h2>
 
-        <button className="flex gap-1 items-center self-start pb-2.5 mt-6 md:mt-10 text-xl md:text-2xl font-semibold leading-relaxed text-green-600 whitespace-nowrap border-b border-green-600">
-          <span>Москва</span>
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/47b051a4e7c59fdc33aafc74ab87d9b6c29c5ee6dec28d94e3276ffa57d95392"
-            className="object-contain shrink-0 w-3.5 aspect-square"
-            alt="Arrow icon"
-          />
-        </button>
+        <div className="relative">
+          <button
+            className="flex gap-1 items-center self-start pb-2.5 mt-6 md:mt-10 text-xl md:text-2xl font-semibold leading-relaxed text-green-600 whitespace-nowrap border-b border-green-600"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <span>{selectedCity}</span>
+            <img
+              loading="lazy"
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/47b051a4e7c59fdc33aafc74ab87d9b6c29c5ee6dec28d94e3276ffa57d95392"
+              className={`object-contain shrink-0 w-3.5 aspect-square transition-transform ${
+                isOpen ? "rotate-180" : ""
+              }`}
+              alt="Arrow icon"
+            />
+          </button>
+
+          {isOpen && (
+            <div className="absolute z-10 mt-1 py-2 bg-white border border-gray-200 rounded-md shadow-lg min-w-[200px]">
+              {cities.map((city) => (
+                <button
+                  key={city}
+                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
+                    city === selectedCity ? "text-green-600" : "text-black"
+                  }`}
+                  onClick={() => {
+                    setSelectedCity(city);
+                    setIsOpen(false);
+                  }}
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-10 mt-6 md:mt-10">
-          {PHYSICAL_STORES.map((store) => (
-            <PhysicalStore key={store.id} {...store} />
+          {filteredStores.map((store) => (
+            <PhysicalStore
+              key={store.id}
+              name={store.name}
+              description={store.description}
+              link={store.link}
+            />
           ))}
         </div>
       </div>

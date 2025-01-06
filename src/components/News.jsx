@@ -1,43 +1,19 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Container from "./Container";
+import { getArticles, API_URL } from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
 
-const NEWS_ITEMS = [
-  {
-    id: 1,
-    title:
-      "Hett Automotive производит и поставляет на рынок России запчасти для автомобилей различных марок",
-    date: "11 Ноября 2024",
-    isActive: true,
-  },
-  {
-    id: 2,
-    title:
-      "Hett Automotive производит и поставляет на рынок России запчасти для автомобилей различных марок",
-    date: "11 Ноября 2024",
-  },
-  {
-    id: 3,
-    title:
-      "Hett Automotive производит и поставляет на рынок России запчасти для автомобилей различных марок",
-    date: "11 Ноября 2024",
-  },
-  {
-    id: 4,
-    title:
-      "Hett Automotive производит и поставляет на рынок России запчасти для автомобилей различных марок",
-    date: "11 Ноября 2024",
-  },
-];
-
-function NewsItem({ title, date, isActive }) {
+function NewsItem({ title, date, isActive, onClick }) {
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
-      className={`flex flex-col justify-center py-5 pl-8 w-full border-l-[5px] 
+      onClick={onClick}
+      className={`flex flex-col justify-center py-5 pl-8 w-full border-l-[5px] cursor-pointer 
       ${isActive ? "border-hett-1" : "border-neutral-500"} 
-      max-md:pl-5 max-md:max-w-full`}
+      max-md:pl-5 max-md:max-w-full hover:border-hett-1 transition-colors`}
     >
       <h3 className="text-xl leading-8 text-white max-md:max-w-full">
         {title}
@@ -50,6 +26,48 @@ function NewsItem({ title, date, isActive }) {
 }
 
 export default function News() {
+  const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [featuredArticle, setFeaturedArticle] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const data = await getArticles(1, 5);
+        if (data.data) {
+          setArticles(data.data);
+          setFeaturedArticle(data.data[0]);
+          setSelectedArticle(data.data[1]);
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching articles:", err);
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  const handleArticleClick = (article) => {
+    setSelectedArticle(article);
+    setFeaturedArticle(article);
+  };
+
+  const handleReadMore = () => {
+    navigate(`/news/${featuredArticle.slug}`);
+  };
+
+  if (isLoading) return null;
+  if (error) return null;
+  if (!articles.length) return null;
+
+  const listArticles = articles.slice(1, 5);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -62,8 +80,6 @@ export default function News() {
 
   return (
     <div className="relative">
-      {/* Full width background */}
-
       <div className="absolute inset-0 bg-neutral-900 z-[-1]" />
 
       <Container>
@@ -79,7 +95,6 @@ export default function News() {
           </motion.h1>
 
           <div className="flex flex-wrap gap-10 items-start mt-16 w-full max-md:mt-10 max-md:max-w-full">
-            {/* Featured News */}
             <motion.article
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -93,9 +108,9 @@ export default function News() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 loading="lazy"
-                srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/02d56fc38dcb3cbef1bb75aa8ed05f7c86f4ebf25f52dbe82a17734f6cd6f862?width=300"
-                alt="Featured News"
-                className="object-contain flex-1 w-full aspect-[1.44] max-md:max-w-full"
+                src={`${API_URL}${featuredArticle.image.url}`}
+                alt=""
+                className="object-cover w-full h-[430px] max-md:max-w-full"
               />
 
               <motion.p
@@ -105,14 +120,13 @@ export default function News() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="mt-10 text-xl leading-8 text-white max-md:max-w-full"
               >
-                Hett Automotive производит и поставляет на рынок России запчасти
-                для автомобилей различных марок. Hett Automotive производит и
-                поставляет на рынок России запчасти для автомобилей.
+                {featuredArticle.description}
               </motion.p>
 
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={handleReadMore}
                 className="flex gap-2 items-center self-start px-8 py-4 mt-10 bg-hett-1 hover:bg-green-600 transition-all min-h-[60px] max-md:px-5"
               >
                 <span className="self-stretch my-auto text-lg font-semibold leading-tight text-white">
@@ -129,7 +143,6 @@ export default function News() {
               </motion.button>
             </motion.article>
 
-            {/* News List */}
             <motion.div
               variants={containerVariants}
               initial="hidden"
@@ -137,18 +150,23 @@ export default function News() {
               viewport={{ once: true }}
               className="flex flex-col flex-1 shrink basis-0 min-w-[240px] max-md:max-w-full"
             >
-              {NEWS_ITEMS.map((item, index) => (
-                <div key={item.id} className={index > 0 ? "mt-8" : ""}>
-                  <NewsItem {...item} />
+              {listArticles.map((article, index) => (
+                <div key={article.id} className={index > 0 ? "mt-8" : ""}>
+                  <NewsItem
+                    title={article.title}
+                    date={new Date(article.date).toLocaleDateString("ru-RU")}
+                    isActive={article.id === selectedArticle?.id}
+                    onClick={() => handleArticleClick(article)}
+                  />
                 </div>
               ))}
 
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
                 className="gap-2.5 self-start py-2.5 mt-8 text-2xl font-semibold leading-relaxed text-white border-b-2 border-hett-1"
               >
-                Все новости
+                <Link to="/news">Все новости</Link>
               </motion.button>
             </motion.div>
           </div>

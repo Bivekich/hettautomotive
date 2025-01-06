@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Container from "./Container";
+import { getFooterData } from "../services/api";
 
 function MobileMenu({ isOpen, onClose }) {
   const navigate = useNavigate();
@@ -63,6 +64,22 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const headerRef = useRef(null);
+  const [footerData, setFooterData] = useState(null);
+
+  useEffect(() => {
+    const fetchFooterData = async () => {
+      try {
+        const data = await getFooterData();
+        if (data.data) {
+          setFooterData(data.data);
+        }
+      } catch (err) {
+        console.error("Error fetching footer data:", err);
+      }
+    };
+
+    fetchFooterData();
+  }, []);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -132,22 +149,51 @@ export default function Header() {
           {/* Contact Info Row */}
           <div className="flex justify-end py-4 md:py-0 md:flex-1 md:items-center">
             <div className="flex gap-4 sm:gap-6 md:gap-8 items-center text-base sm:text-md font-bold leading-relaxed uppercase text-neutral-600">
-              <div className="hover:text-hett-1 transition-colors cursor-pointer whitespace-nowrap">
-                +7 (495) 260 20 60
-              </div>
+              <a
+                href={`tel:${footerData?.headerPhone || "+7 (495) 260 20 60"}`}
+                className="text-lg font-bold leading-relaxed text-black hover:text-hett-1 transition-colors cursor-pointer whitespace-nowrap"
+              >
+                {footerData?.headerPhone || "+7 (495) 260 20 60"}
+              </a>
               <div className="flex gap-4 sm:gap-6 md:gap-8">
-                <img
-                  loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/b83586420c9dc8893b65c6f6328eb37b69afbc6bde34d83480e77ee40852577b"
-                  alt="Contact Icon 1"
-                  className="object-contain aspect-[1.19] w-[18px] sm:w-[20px] md:w-[22px] hover:scale-105 transition-transform cursor-pointer"
-                />
-                <img
-                  loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/3b60a59975eee0c801ff4dd79163ad55004f48024b27bcf29a3140c1469fc934"
-                  alt="Contact Icon 2"
-                  className="object-contain aspect-square w-[18px] sm:w-[20px] md:w-[22px] hover:scale-105 transition-transform cursor-pointer"
-                />
+                <a
+                  href={
+                    footerData?.telegramLink
+                      ? footerData.telegramLink.startsWith("http")
+                        ? footerData.telegramLink
+                        : `https://${footerData.telegramLink}`
+                      : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:scale-110 transition-transform"
+                >
+                  <img
+                    loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/b83586420c9dc8893b65c6f6328eb37b69afbc6bde34d83480e77ee40852577b"
+                    alt="Telegram"
+                    className="object-contain aspect-[1.19] w-[18px] sm:w-[20px] md:w-[22px]"
+                  />
+                </a>
+                <a
+                  href={
+                    footerData?.whatsappLink
+                      ? footerData.whatsappLink.startsWith("http")
+                        ? footerData.whatsappLink
+                        : `https://${footerData.whatsappLink}`
+                      : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:scale-110 transition-transform"
+                >
+                  <img
+                    loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/3b60a59975eee0c801ff4dd79163ad55004f48024b27bcf29a3140c1469fc934"
+                    alt="WhatsApp"
+                    className="object-contain aspect-square w-[18px] sm:w-[20px] md:w-[22px]"
+                  />
+                </a>
               </div>
             </div>
           </div>

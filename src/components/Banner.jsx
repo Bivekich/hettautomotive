@@ -1,10 +1,16 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { getBanners } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
+  const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [slides, setSlides] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleSlideClick = useCallback(
     (index) => {
@@ -19,35 +25,61 @@ const Banner = () => {
     [isAnimating, activeSlide]
   );
 
-  const slides = [
-    {
-      number: "01",
-      subtitle: "Почему выбирают нас",
-      title: "Настоящие эксперты в области производства автозапчастей",
-      backgroundImage:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/2be1a4a74d5229ad75f19f0ea23d354d2bf024fb8943ed5a9ae02ee33ae0e734",
-      srcSet:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/2be1a4a74d5229ad75f19f0ea23d354d2bf024fb8943ed5a9ae02ee33ae0e734?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/2be1a4a74d5229ad75f19f0ea23d354d2bf024fb8943ed5a9ae02ee33ae0e734?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/2be1a4a74d5229ad75f19f0ea23d354d2bf024fb8943ed5a9ae02ee33ae0e734?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/2be1a4a74d5229ad75f19f0ea23d354d2bf024fb8943ed5a9ae02ee33ae0e734?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/2be1a4a74d5229ad75f19f0ea23d354d2bf024fb8943ed5a9ae02ee33ae0e734?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/2be1a4a74d5229ad75f19f0ea23d354d2bf024fb8943ed5a9ae02ee33ae0e734?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/2be1a4a74d5229ad75f19f0ea23d354d2bf024fb8943ed5a9ae02ee33ae0e734?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=2000 2000w",
-    },
-    {
-      number: "02",
-      subtitle: "Наши преимущества",
-      title: "Качество и надежность каждой детали",
-      backgroundImage:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/bb46b8c6943b074b9a2bcbbc31ceadebdee33a57b7db2017ca7929bfacc97ce5",
-      srcSet:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/bb46b8c6943b074b9a2bcbbc31ceadebdee33a57b7db2017ca7929bfacc97ce5?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb46b8c6943b074b9a2bcbbc31ceadebdee33a57b7db2017ca7929bfacc97ce5?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb46b8c6943b074b9a2bcbbc31ceadebdee33a57b7db2017ca7929bfacc97ce5?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb46b8c6943b074b9a2bcbbc31ceadebdee33a57b7db2017ca7929bfacc97ce5?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb46b8c6943b074b9a2bcbbc31ceadebdee33a57b7db2017ca7929bfacc97ce5?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb46b8c6943b074b9a2bcbbc31ceadebdee33a57b7db2017ca7929bfacc97ce5?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/bb46b8c6943b074b9a2bcbbc31ceadebdee33a57b7db2017ca7929bfacc97ce5?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=2000 2000w",
-    },
-    {
-      number: "03",
-      subtitle: "Инновации и развитие",
-      title: "Современные технологии производства",
-      backgroundImage:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/39f4e83d36b3558576962d2cf3e047d51c905da6fbbbd408455d197cbfa16548",
-      srcSet:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/39f4e83d36b3558576962d2cf3e047d51c905da6fbbbd408455d197cbfa16548?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/39f4e83d36b3558576962d2cf3e047d51c905da6fbbbd408455d197cbfa16548?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/39f4e83d36b3558576962d2cf3e047d51c905da6fbbbd408455d197cbfa16548?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/39f4e83d36b3558576962d2cf3e047d51c905da6fbbbd408455d197cbfa16548?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/39f4e83d36b3558576962d2cf3e047d51c905da6fbbbd408455d197cbfa16548?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/39f4e83d36b3558576962d2cf3e047d51c905da6fbbbd408455d197cbfa16548?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/39f4e83d36b3558576962d2cf3e047d51c905da6fbbbd408455d197cbfa16548?placeholderIfAbsent=true&apiKey=fa4b243dc5ba4bd7bd0ba9fd4faf0bd2&width=2000 2000w",
-    },
-  ];
+  useEffect(() => {
+    const fetchBannerData = async () => {
+      try {
+        const data = await getBanners();
+        console.log("Banner data:", data);
+        const mappedSlides = data.data.map((item) => {
+          const backgroundUrl = item.Background
+            ? `${import.meta.env.VITE_STRAPI_API_URL}${item.Background.url}`
+            : "/background_img.png";
+
+          console.log("Background URL:", backgroundUrl);
+
+          return {
+            number: item.Number,
+            subtitle: item.Subtitle,
+            title: item.Title,
+            link: item.Link || "/",
+            backgroundImage: backgroundUrl,
+            srcSet: item.Background?.formats
+              ? Object.entries(item.Background.formats)
+                  .map(
+                    ([size, format]) =>
+                      `${import.meta.env.VITE_STRAPI_API_URL}${format.url} ${
+                        format.width
+                      }w`
+                  )
+                  .join(", ")
+              : "",
+          };
+        });
+
+        console.log("Mapped slides:", mappedSlides);
+        setSlides(mappedSlides);
+      } catch (err) {
+        console.error("Error fetching banner data:", err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBannerData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!slides || slides.length === 0) {
+    return <div>No banner data available</div>;
+  }
 
   return (
     <div className="max-w-[2200px] mx-auto">
@@ -118,16 +150,21 @@ const Banner = () => {
                   >
                     {slide.title}
                   </motion.div>
-                  <motion.div
+                  <motion.a
+                    href={slide.link}
+                    target="_blank"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex gap-2 items-center self-start px-6 md:px-8 py-3 md:py-4 mt-6 md:mt-10 bg-hett-1 hover:bg-green-600 transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
                   >
                     <div className="self-stretch my-auto text-base md:text-lg font-semibold leading-tight text-white">
                       Подробнее
                     </div>
                     <FaArrowRight className="text-white" />
-                  </motion.div>
+                  </motion.a>
                 </motion.div>
               )}
             </div>

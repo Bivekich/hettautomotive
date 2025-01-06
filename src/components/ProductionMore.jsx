@@ -1,100 +1,54 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
-const PRODUCT_CATEGORIES = [
-  {
-    title: "Аккумуляторы",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/702692b5314f849a5cfb7f54b83c70f940392e2b7e7f2bf0d074514d7df8cec2",
-    imageClass: "object-contain aspect-[1.33] w-[88px]",
-    category: "batteries",
-  },
-  {
-    title: "Кузовные элементы",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/8891ed0b659f8d4ecf5b1ac30dd9385314aaaa02d81aca2688e83b863e72f365",
-    imageClass: "object-contain aspect-[1.01] w-[69px]",
-    category: "body_parts",
-  },
-  {
-    title: "Аккумуляторы",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/702692b5314f849a5cfb7f54b83c70f940392e2b7e7f2bf0d074514d7df8cec2",
-    imageClass: "object-contain aspect-[1.33] w-[88px]",
-    category: "batteries",
-  },
-  {
-    title: "Автомобильные диски и шины",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/7a2e3d344ebba6ad4aabb7fbbe70d19079e782df0473bcabf1cd57f293ecaf14",
-    imageClass: "object-contain w-20 aspect-square",
-    category: "wheels",
-  },
-  {
-    title: "Кузовные элементы",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/8891ed0b659f8d4ecf5b1ac30dd9385314aaaa02d81aca2688e83b863e72f365",
-    imageClass: "object-contain aspect-[1.01] w-[69px]",
-    category: "body_parts",
-  },
-  {
-    title: "Автомобильные аксессуары",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/c8c9ad53a3aa5d270f4610d32f9d0c2f9e6a52fc59a9c57cf4e4c94d0dc89622",
-    imageClass: "object-contain aspect-[0.82] w-[72px]",
-    category: "accessories",
-  },
-  {
-    title: "Запасные части для ходовой части",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/948aaf7d5761c8ce633c7d07b08d22b5ca388b373823fb09b37eba013e808996",
-    imageClass: "object-contain w-20 aspect-square",
-    category: "parts",
-  },
-  {
-    title: "Автомобильные диски и шины",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/7a2e3d344ebba6ad4aabb7fbbe70d19079e782df0473bcabf1cd57f293ecaf14",
-    imageClass: "object-contain w-20 aspect-square",
-    category: "wheels",
-  },
-  {
-    title: "Автомобильные аксессуары",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/c8c9ad53a3aa5d270f4610d32f9d0c2f9e6a52fc59a9c57cf4e4c94d0dc89622",
-    imageClass: "object-contain aspect-[0.82] w-[72px]",
-    category: "accessories",
-  },
-  {
-    title: "Запасные части для ходовой части",
-    image:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/948aaf7d5761c8ce633c7d07b08d22b5ca388b373823fb09b37eba013e808996",
-    imageClass: "object-contain w-20 aspect-square",
-    category: "parts",
-  },
-];
+import { useState, useEffect } from "react";
+import { getProductCategories } from "../services/api";
 
 export default function ProductionMore() {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getProductCategories();
+        console.log("Categories from backend:", response);
+
+        if (response.data && Array.isArray(response.data)) {
+          setCategories(response.data);
+        } else {
+          console.error("Unexpected API response structure:", response);
+          setError("Invalid data structure received from API");
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleCategoryClick = (category) => {
-    navigate(`/catalog?category=${category}`);
+    const categorySlug = category?.slug;
+    console.log("Full category object:", category);
+
+    if (!categorySlug) {
+      console.error("No slug found for category:", category);
+      return;
+    }
+
+    const url = `/catalog/${categorySlug}`;
+    console.log("Navigating to:", url);
+    navigate(url);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-  };
+  if (loading) return <div>Loading categories...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!categories.length) return <div>No categories found</div>;
 
   return (
     <motion.section
@@ -104,35 +58,70 @@ export default function ProductionMore() {
       className="flex overflow-hidden flex-col px-80 pt-24 max-md:px-5 pb-2"
     >
       <motion.div
-        variants={containerVariants}
-        className="flex flex-wrap items-stretch w-full max-md:max-w-full border-r border-zinc-400"
+        variants={{
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 },
+          },
+        }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 w-full max-md:max-w-full border-r border-zinc-400"
       >
-        {PRODUCT_CATEGORIES.map((category, index) => (
-          <motion.div
-            key={`${category.title}-${index}`}
-            variants={itemVariants}
-            whileHover={{ scale: 1.02 }}
-            onClick={() => handleCategoryClick(category.category)}
-            className={`flex flex-col grow shrink-0 items-center px-7 py-8 w-1/5 min-w-[240px] max-md:px-5 bg-white hover:z-10 
-              border-t border-l border-zinc-400
-              hover:border hover:border-zinc-400 cursor-pointer
-              ${index >= PRODUCT_CATEGORIES.length - 5 ? "border-b" : ""}`}
-          >
-            <div className="flex flex-col justify-center items-center h-[140px] w-full">
-              <div className="flex flex-col justify-center items-center px-5 py-8 bg-white w-full h-full max-md:px-5">
-                <img
-                  loading="lazy"
-                  src={category.image}
-                  alt={category.title}
-                  className={`object-contain ${category.imageClass}`}
-                />
+        {categories.slice(0, 8).map((category, index) => {
+          const categoryName = category?.name;
+          const categorySlug = category?.slug;
+          const categoryImage = category?.image?.url
+            ? `${import.meta.env.VITE_API_URL || "http://localhost:1337"}${
+                category.image.url
+              }`
+            : null;
+
+          console.log("Category data:", category); // For debugging
+
+          if (!categoryName || !categorySlug) {
+            console.warn("Category missing required fields:", category);
+            return null;
+          }
+
+          return (
+            <motion.div
+              key={category.id}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ scale: 1.02 }}
+              onClick={() => handleCategoryClick(category)}
+              className={`flex flex-col grow shrink-0 items-center px-7 py-8 w-full bg-white hover:z-10 
+                border-t border-l border-zinc-400
+                ${
+                  index >= categories.length - (categories.length % 4 || 4)
+                    ? "border-b"
+                    : ""
+                }
+                lg:last:border-b lg:[&:nth-child(4n)]:border-r
+                sm:last:border-b sm:[&:nth-child(2n)]:border-r sm:[&:nth-last-child(-n+2)]:border-b
+                last:border-b last:border-r [&:nth-last-child(-n+1)]:border-b
+                hover:border hover:border-zinc-400 cursor-pointer`}
+            >
+              <div className="flex flex-col justify-center items-center h-[140px] w-full">
+                <div className="flex flex-col justify-center items-center px-5 py-8 bg-white w-full h-full max-md:px-5">
+                  {categoryImage && (
+                    <img
+                      loading="lazy"
+                      src={categoryImage}
+                      alt={categoryName}
+                      className="object-contain w-auto h-full"
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-            <h2 className="mt-5 text-xl font-medium leading-6 text-center text-black pb-4">
-              {category.title}
-            </h2>
-          </motion.div>
-        ))}
+              <h2 className="mt-5 text-xl font-medium leading-6 text-center text-black pb-4">
+                {categoryName}
+              </h2>
+            </motion.div>
+          );
+        })}
       </motion.div>
     </motion.section>
   );
