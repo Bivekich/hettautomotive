@@ -26,9 +26,9 @@ export default function CompanyIntro() {
     fetchAdvantageData();
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!advantageData) return <div>No advantage data available</div>;
+
+  if (!advantageData) return null;
 
   return (
     <section
@@ -50,7 +50,7 @@ export default function CompanyIntro() {
           md:text-3xl
           max-md:text-2xl"
       >
-        {advantageData.title}
+        {advantageData?.title || "Преимущества"}
       </motion.h1>
 
       <motion.p
@@ -64,7 +64,7 @@ export default function CompanyIntro() {
           md:text-lg md:mt-10
           max-md:mt-8 max-md:text-base"
       >
-        {advantageData.description}
+        {advantageData?.description || ""}
       </motion.p>
     </section>
   );

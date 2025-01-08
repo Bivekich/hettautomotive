@@ -13,18 +13,13 @@ export default function ProductionMore() {
     const fetchCategories = async () => {
       try {
         const response = await getProductCategories();
-        console.log("Categories from backend:", response);
-
-        if (response.data && Array.isArray(response.data)) {
+        if (response.data) {
           setCategories(response.data);
-        } else {
-          console.error("Unexpected API response structure:", response);
-          setError("Invalid data structure received from API");
         }
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-        setError(error.message);
-      } finally {
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        setError(err.message);
         setLoading(false);
       }
     };
@@ -33,20 +28,11 @@ export default function ProductionMore() {
   }, []);
 
   const handleCategoryClick = (category) => {
-    const categorySlug = category?.slug;
-    console.log("Full category object:", category);
-
-    if (!categorySlug) {
-      console.error("No slug found for category:", category);
-      return;
-    }
-
-    const url = `/catalog/${categorySlug}`;
-    console.log("Navigating to:", url);
+    const url = `/production/${category.attributes.slug}`;
     navigate(url);
   };
 
-  if (loading) return <div>Loading categories...</div>;
+  if (loading) return <div></div>;
   if (error) return <div>Error: {error}</div>;
   if (!categories.length) return <div>No categories found</div>;
 
@@ -65,7 +51,7 @@ export default function ProductionMore() {
             transition: { staggerChildren: 0.1 },
           },
         }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 w-full max-md:max-w-full border-r border-zinc-400"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 w-full max-md:max-w-full"
       >
         {categories.slice(0, 8).map((category, index) => {
           const categoryName = category?.name;
@@ -75,8 +61,7 @@ export default function ProductionMore() {
                 category.image.url
               }`
             : null;
-
-          console.log("Category data:", category); // For debugging
+          const isSvg = category?.image?.mime === "image/svg+xml";
 
           if (!categoryName || !categorySlug) {
             console.warn("Category missing required fields:", category);
@@ -92,28 +77,33 @@ export default function ProductionMore() {
               }}
               whileHover={{ scale: 1.02 }}
               onClick={() => handleCategoryClick(category)}
-              className={`flex flex-col grow shrink-0 items-center px-7 py-8 w-full bg-white hover:z-10 
-                border-t border-l border-zinc-400
-                ${
-                  index >= categories.length - (categories.length % 4 || 4)
-                    ? "border-b"
-                    : ""
-                }
-                lg:last:border-b lg:[&:nth-child(4n)]:border-r
-                sm:last:border-b sm:[&:nth-child(2n)]:border-r sm:[&:nth-last-child(-n+2)]:border-b
-                last:border-b last:border-r [&:nth-last-child(-n+1)]:border-b
-                hover:border hover:border-zinc-400 cursor-pointer`}
+              className="flex flex-col items-center px-7 py-8 bg-white border hover:z-10 cursor-pointer hover:border-zinc-400"
             >
               <div className="flex flex-col justify-center items-center h-[140px] w-full">
                 <div className="flex flex-col justify-center items-center px-5 py-8 bg-white w-full h-full max-md:px-5">
-                  {categoryImage && (
-                    <img
-                      loading="lazy"
-                      src={categoryImage}
-                      alt={categoryName}
-                      className="object-contain w-auto h-full"
-                    />
-                  )}
+                  {categoryImage &&
+                    (isSvg ? (
+                      <object
+                        data={categoryImage}
+                        type="image/svg+xml"
+                        className="object-contain w-auto h-full"
+                        aria-label={`Категория продукции: ${categoryName}`}
+                      >
+                        <img
+                          loading="lazy"
+                          src={categoryImage}
+                          alt={`Категория продукции: ${categoryName}`}
+                          className="object-contain w-auto h-full"
+                        />
+                      </object>
+                    ) : (
+                      <img
+                        loading="lazy"
+                        src={categoryImage}
+                        alt={`Категория продукции: ${categoryName}`}
+                        className="object-contain w-auto h-full"
+                      />
+                    ))}
                 </div>
               </div>
               <h2 className="mt-5 text-xl font-medium leading-6 text-center text-black pb-4">

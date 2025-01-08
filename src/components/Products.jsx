@@ -104,7 +104,6 @@ export default function Products() {
     const fetchProductsData = async () => {
       try {
         const data = await getProductsData();
-        console.log("Products data:", data);
         if (data.data) {
           setProductsData(data.data);
         }
@@ -119,9 +118,9 @@ export default function Products() {
     fetchProductsData();
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div></div>;
   if (error) return <div>Error: {error}</div>;
-  if (!productsData.length) return <div>No products available</div>;
+  if (!productsData.length) return <div></div>;
 
   return (
     <section className="relative overflow-x-hidden">

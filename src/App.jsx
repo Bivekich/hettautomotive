@@ -29,6 +29,7 @@ import NewsArticle from "./components/NewsArticle";
 import { getCatalogProduct } from "./services/api";
 import LoadingProvider from "./components/LoadingProvider";
 import { usePageTitle } from "./hooks/usePageTitle";
+import Products from "./components/Products";
 
 // Page wrapper components
 const HomePage = () => {
@@ -42,6 +43,7 @@ const HomePage = () => {
         <Advantages />
         <Geography />
         <News />
+        <Products />
         <YandexMap />
       </Container>
     </>

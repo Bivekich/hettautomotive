@@ -73,7 +73,6 @@ export default function WhereToBuy() {
     fetchData();
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   const filteredStores = physicalStores.filter(
@@ -123,7 +122,7 @@ export default function WhereToBuy() {
               className={`object-contain shrink-0 w-3.5 aspect-square transition-transform ${
                 isOpen ? "rotate-180" : ""
               }`}
-              alt="Arrow icon"
+              alt={isOpen ? "Стрелка вверх" : "Стрелка вниз"}
             />
           </button>
 

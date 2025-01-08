@@ -1,7 +1,7 @@
 export default function YandexMap() {
   return (
     <div
-      className="flex overflow-hidden flex-col px-80 
+      className="flex overflow-hidden flex-col px-80 my-20
       2xl:px-80
       xl:px-60
       lg:px-40

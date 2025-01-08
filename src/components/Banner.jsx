@@ -1,11 +1,9 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { getBanners } from "../services/api";
-import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
-  const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [slides, setSlides] = useState([]);
@@ -43,10 +41,11 @@ const Banner = () => {
             title: item.Title,
             link: item.Link || "/",
             backgroundImage: backgroundUrl,
+            imageName: item.Background?.name || `Слайд ${item.Number}`,
             srcSet: item.Background?.formats
               ? Object.entries(item.Background.formats)
                   .map(
-                    ([size, format]) =>
+                    ([formatName, format]) =>
                       `${import.meta.env.VITE_STRAPI_API_URL}${format.url} ${
                         format.width
                       }w`
@@ -69,18 +68,6 @@ const Banner = () => {
     fetchBannerData();
   }, []);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!slides || slides.length === 0) {
-    return <div>No banner data available</div>;
-  }
-
   return (
     <div className="max-w-[2200px] mx-auto">
       <div className="flex md:flex-row flex-col items-stretch md:items-center h-auto md:h-[650px] overflow-hidden">
@@ -101,7 +88,7 @@ const Banner = () => {
               loading="lazy"
               srcSet={slide.srcSet}
               src={slide.backgroundImage}
-              alt={`Slide ${slide.number}`}
+              alt={slide.imageName}
               className={`absolute inset-0 w-full h-full object-cover`}
             />
 

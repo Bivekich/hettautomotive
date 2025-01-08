@@ -17,40 +17,62 @@ function MobileMenu({ isOpen, onClose }) {
     <div
       ref={menuRef}
       className={`
-        absolute left-0 right-0 bg-black
+        fixed top-0 left-0 w-full h-screen bg-black
         transform transition-all duration-300 ease-in-out
-        ${isOpen ? "max-h-[400px]" : "max-h-0"}
-        overflow-hidden
+        ${isOpen ? "translate-y-0" : "-translate-y-full"}
         md:hidden
         z-50
       `}
     >
-      <nav className="flex flex-col p-4">
+      <nav className="flex flex-col items-center justify-center h-full p-4">
         <div
-          className="py-4 text-white hover:text-hett-1 transition-colors cursor-pointer text-sm font-bold uppercase"
+          className="py-6 text-white hover:text-hett-1 transition-colors cursor-pointer text-xl font-bold uppercase"
           onClick={() => handleNavigation("/about")}
         >
           О компании Hett Automotive
         </div>
         <div
-          className="py-4 text-white hover:text-hett-1 transition-colors cursor-pointer text-sm font-bold uppercase"
+          className="py-6 text-white hover:text-hett-1 transition-colors cursor-pointer text-xl font-bold uppercase"
           onClick={() => handleNavigation("/products")}
         >
           Продукция
         </div>
         <div
-          className="py-4 text-white hover:text-hett-1 transition-colors cursor-pointer text-sm font-bold uppercase"
+          className="py-6 text-white hover:text-hett-1 transition-colors cursor-pointer text-xl font-bold uppercase"
           onClick={() => handleNavigation("/news")}
         >
           Новости
         </div>
         <div
-          className="py-4 text-white hover:text-hett-1 transition-colors cursor-pointer text-sm font-bold uppercase"
+          className="py-6 text-white hover:text-hett-1 transition-colors cursor-pointer text-xl font-bold uppercase"
           onClick={() => handleNavigation("/contacts")}
         >
           Контакты
         </div>
       </nav>
+
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="absolute top-6 right-6 text-white hover:text-hett-1 transition-colors"
+        aria-label="Close menu"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18 6L6 18M6 6L18 18"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
     </div>
   );
 }
@@ -121,39 +143,39 @@ export default function Header() {
               <img
                 loading="lazy"
                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/85a55d59db65cb2af3fda1985ef65b73d87177ce8f405a12e74fdb0665cf30aa"
-                alt="Company Logo"
+                alt="Логотип Hett Automotive"
                 className="object-contain shrink-0 self-stretch my-auto aspect-[3.5] w-[120px] sm:w-[140px] md:w-[154px]"
               />
               <div className="flex flex-col justify-center items-center self-stretch my-auto bg-hett-1 h-[60px] sm:h-[70px] md:h-[83px] w-[60px] sm:w-[70px] md:w-[84px]">
                 <img
                   loading="lazy"
                   src="https://cdn.builder.io/api/v1/image/assets/TEMP/4dacf395a37190826413cfcf1398c3446eb7c6df93fcb32d6adb2be5a3f4c8c9"
-                  alt="Green Logo"
+                  alt="Зеленый логотип Hett Automotive"
                   className="object-contain aspect-[1.04] w-[35px] sm:w-[42px] md:w-[50px]"
                 />
               </div>
             </div>
+          </div>
 
+          {/* Contact Info Row */}
+          <div className="flex justify-end py-4 md:py-0 md:flex-1 md:items-center">
             {/* Burger Menu Button - Visible only on Mobile */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden flex flex-col gap-1 p-2"
+              className="md:hidden flex flex-col gap-1 p-2 mr-auto"
               aria-label="Toggle menu"
             >
               <div className="w-6 h-0.5 bg-neutral-600"></div>
               <div className="w-6 h-0.5 bg-neutral-600"></div>
               <div className="w-6 h-0.5 bg-neutral-600"></div>
             </button>
-          </div>
 
-          {/* Contact Info Row */}
-          <div className="flex justify-end py-4 md:py-0 md:flex-1 md:items-center">
             <div className="flex gap-4 sm:gap-6 md:gap-8 items-center text-base sm:text-md font-bold leading-relaxed uppercase text-neutral-600">
               <a
                 href={`tel:${footerData?.headerPhone || "+7 (495) 260 20 60"}`}
                 className="text-lg font-bold leading-relaxed text-black hover:text-hett-1 transition-colors cursor-pointer whitespace-nowrap"
               >
-                {footerData?.headerPhone || "+7 (495) 260 20 60"}
+                {footerData?.headerPhone || null}
               </a>
               <div className="flex gap-4 sm:gap-6 md:gap-8">
                 <a
@@ -190,7 +212,7 @@ export default function Header() {
                   <img
                     loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/3b60a59975eee0c801ff4dd79163ad55004f48024b27bcf29a3140c1469fc934"
-                    alt="WhatsApp"
+                    alt="Мессенджер WhatsApp"
                     className="object-contain aspect-square w-[18px] sm:w-[20px] md:w-[22px]"
                   />
                 </a>

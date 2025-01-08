@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const API_URL =
   import.meta.env.VITE_STRAPI_API_URL || "http://localhost:1337";
 const API_TOKEN = import.meta.env.VITE_STRAPI_API_TOKEN;
@@ -43,13 +45,17 @@ export const getGeographyData = async () => {
 };
 
 export const getProductsData = async () => {
-  const response = await fetch(`${API_URL}/api/products?populate=*`, {
-    headers: {
-      Authorization: `Bearer ${API_TOKEN}`,
-    },
-  });
-  if (!response.ok) throw new Error("Failed to fetch products data");
-  return response.json();
+  try {
+    const response = await fetch(`${API_URL}/api/products?populate=*`, {
+      headers: {
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
 };
 
 export const getOnlineStores = async () => {
@@ -432,4 +438,59 @@ export const getBannerByPage = async (page) => {
   );
   if (!response.ok) throw new Error(`Failed to fetch banner for page: ${page}`);
   return response.json();
+};
+
+export const getCategoriesData = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_STRAPI_API_URL}/api/categories?populate=*`,
+      {
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_STRAPI_API_TOKEN}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
+export const getModelsData = async (queryParams) => {
+  try {
+    const url = new URL(`${import.meta.env.VITE_STRAPI_API_URL}/api/models`);
+    if (queryParams) {
+      url.search = queryParams.toString();
+    }
+    const response = await axios.get(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_STRAPI_API_TOKEN}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching models:", error);
+    throw error;
+  }
+};
+
+export const getModificationsData = async (queryParams) => {
+  try {
+    const url = new URL(
+      `${import.meta.env.VITE_STRAPI_API_URL}/api/modifications`
+    );
+    if (queryParams) {
+      url.search = queryParams.toString();
+    }
+    const response = await axios.get(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_STRAPI_API_TOKEN}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching modifications:", error);
+    throw error;
+  }
 };

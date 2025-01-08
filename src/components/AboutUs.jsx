@@ -26,9 +26,9 @@ export default function AboutUs() {
     fetchAboutData();
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!aboutData) return <div>No about data available</div>;
+
+  if (!aboutData) return null;
 
   return (
     <section
@@ -50,7 +50,7 @@ export default function AboutUs() {
           md:text-3xl
           max-md:text-2xl"
       >
-        {aboutData.title}
+        {aboutData?.title || "О компании"}
       </motion.h1>
 
       <motion.div
@@ -70,7 +70,7 @@ export default function AboutUs() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          {aboutData.mainText}
+          {aboutData?.mainText || ""}
         </motion.p>
 
         <motion.p
@@ -80,7 +80,7 @@ export default function AboutUs() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-8 max-md:mt-6"
         >
-          {aboutData.additionalText}
+          {aboutData?.additionalText || ""}
         </motion.p>
       </motion.div>
     </section>

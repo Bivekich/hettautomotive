@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { API_URL, getCatalogProduct } from "../services/api";
 import Container from "./Container";
 
-const ImageGallery = ({ images }) => {
+const ImageGallery = ({ images, product }) => {
   const [selectedImage, setSelectedImage] = useState(images?.[0]?.url || null);
 
   return (
@@ -16,7 +16,7 @@ const ImageGallery = ({ images }) => {
             <img
               loading="lazy"
               src={`${API_URL}${selectedImage}`}
-              alt="Product"
+              alt={`${product?.name || "Продукт"} - основное изображение`}
               className="object-contain w-full aspect-[1.15]"
             />
           )}
@@ -31,7 +31,7 @@ const ImageGallery = ({ images }) => {
               key={index}
               loading="lazy"
               src={`${API_URL}${image.url}`}
-              alt={`Thumbnail ${index + 1}`}
+              alt={`${product?.name || "Продукт"} - изображение ${index + 1}`}
               className={`object-contain shrink-0 self-stretch my-auto aspect-[1.39] w-[70px] sm:w-[90px] cursor-pointer ${
                 selectedImage === image.url ? "border-2 border-green-600" : ""
               }`}
@@ -50,6 +50,9 @@ ImageGallery.propTypes = {
       url: PropTypes.string.isRequired,
     })
   ),
+  product: PropTypes.shape({
+    name: PropTypes.string,
+  }),
 };
 
 const Specifications = ({ specifications, articleNumber, whereToBuyLink }) => {
@@ -141,7 +144,7 @@ const ProductInfo = () => {
     <Container>
       <div className="flex flex-col px-4 sm:px-8 md:px-16 lg:px-40 xl:px-80 py-8 sm:py-12">
         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10">
-          <ImageGallery images={product.images} />
+          <ImageGallery images={product.images} product={product} />
           <Specifications
             specifications={product.detailedSpecifications}
             articleNumber={product.articleNumber}

@@ -95,7 +95,7 @@ export default function NewsPage() {
           transition={{ duration: 0.6, delay: 0.5 }}
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/5df0d77e28c22d02db7efc0423abfbca45cdcfbea56a05c5155c3489617329e4"
-          alt="Hett Automotive"
+          alt="Новости Hett Automotive"
           className="object-cover mt-16 w-full aspect-[2.98] max-md:mt-10"
         />
       </motion.div>

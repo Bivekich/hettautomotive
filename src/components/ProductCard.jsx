@@ -13,7 +13,7 @@ export default function ProductCard({ category, image, onClick }) {
           <img
             loading="lazy"
             src={image.image}
-            alt={category.name}
+            alt={`Категория ${category.name}`}
             className={`object-contain ${image.imageClass}`}
           />
         )}
@@ -38,7 +38,7 @@ export default function ProductCard({ category, image, onClick }) {
               loading="lazy"
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/f768dc0bc0f7cf7a8ce71675970b30a2473b0ea98d39b37565db3fc3cd9e6fbc"
               className="object-contain self-stretch my-auto w-2.5 aspect-[1.25]"
-              alt="arrow"
+              alt="Стрелка вправо"
             />
           </div>
         </div>

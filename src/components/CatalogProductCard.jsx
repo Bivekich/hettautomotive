@@ -12,7 +12,7 @@ export default function CatalogProductCard({ product, onClick }) {
         loading="lazy"
         srcSet={`${product.image}?width=100 100w, ${product.image}?width=200 200w, ${product.image}?width=400 400w, ${product.image}?width=800 800w, ${product.image}?width=1200 1200w, ${product.image}?width=1600 1600w, ${product.image}?width=2000 2000w`}
         src={product.image}
-        alt={product.name}
+        alt={`Товар ${product.name} - артикул ${product.articleNumber}`}
         className="object-contain shrink-0 aspect-[1.04] w-[207px]"
       />
       <div className="flex flex-col flex-1 shrink basis-0 min-w-[240px]">
@@ -39,7 +39,7 @@ export default function CatalogProductCard({ product, onClick }) {
               loading="lazy"
               src="https://cdn.builder.io/api/v1/image/assets/TEMP/f768dc0bc0f7cf7a8ce71675970b30a2473b0ea98d39b37565db3fc3cd9e6fbc"
               className="object-contain self-stretch my-auto w-2.5 aspect-[1.25]"
-              alt="arrow"
+              alt="Стрелка вправо"
             />
           </div>
         </div>

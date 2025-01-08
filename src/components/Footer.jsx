@@ -124,12 +124,16 @@ export default function Footer() {
             <h3 className="text-lg sm:text-xl font-bold leading-none text-white">
               Продукция
             </h3>
-            <nav className="flex flex-col mt-6 md:mt-8 w-full text-sm sm:text-base leading-snug text-gray-400">
+            <nav
+              className={`grid ${
+                categories.length > 4 ? "grid-cols-2" : "grid-cols-1"
+              } gap-x-8 gap-y-3 md:gap-y-4 mt-6 md:mt-8 w-full text-sm sm:text-base leading-snug text-gray-400`}
+            >
               {categories.map((category) => (
                 <div
                   key={category.id}
                   onClick={() => handleNavigation(`/catalog/${category.slug}`)}
-                  className="mt-3 first:mt-0 md:mt-4 hover:text-hett-1 transition-colors cursor-pointer"
+                  className="hover:text-hett-1 transition-colors cursor-pointer"
                 >
                   {category.name}
                 </div>

@@ -13,18 +13,13 @@ export default function Production() {
     const fetchCategories = async () => {
       try {
         const response = await getProductCategories();
-        console.log("Categories from backend:", response);
-
-        if (response.data && Array.isArray(response.data)) {
+        if (response.data) {
           setCategories(response.data);
-        } else {
-          console.error("Unexpected API response structure:", response);
-          setError("Invalid data structure received from API");
         }
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-        setError(error.message);
-      } finally {
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        setError(err.message);
         setLoading(false);
       }
     };
@@ -48,17 +43,11 @@ export default function Production() {
   };
 
   const handleCategoryClick = (category) => {
-    if (!category?.slug) {
-      console.error("No slug found for category:", category);
-      return;
-    }
-
-    const url = `/catalog/${category.slug}`;
-    console.log("Navigating to:", url);
+    const url = `/production/${category.attributes.slug}`;
     navigate(url);
   };
 
-  if (loading) return <div>Loading categories...</div>;
+  if (loading) return <div></div>;
   if (error) return <div>Error: {error}</div>;
   if (!categories.length) return <div>No categories found</div>;
 
@@ -78,7 +67,7 @@ export default function Production() {
 
       <motion.div
         variants={containerVariants}
-        className="flex flex-wrap items-stretch mt-16 w-full max-md:mt-10 max-md:max-w-full"
+        className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 w-full max-md:max-w-full"
       >
         {categories.slice(0, 4).map((category) => {
           const categoryName = category?.name;
@@ -88,8 +77,7 @@ export default function Production() {
                 category.image.url
               }`
             : null;
-
-          console.log("Category data:", category); // For debugging
+          const isSvg = category?.image?.mime === "image/svg+xml";
 
           if (!categoryName || !categorySlug) {
             console.warn("Category missing required fields:", category);
@@ -102,18 +90,33 @@ export default function Production() {
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               onClick={() => handleCategoryClick(category)}
-              className="flex flex-col grow shrink-0 items-center px-7 py-8 w-1/5 min-w-[240px] max-md:px-5 border border-zinc-400 bg-white cursor-pointer"
+              className="flex flex-col items-center px-7 py-8 bg-white border hover:z-10 cursor-pointer hover:border-zinc-400"
             >
               <div className="flex flex-col justify-center items-center h-[140px] w-full">
                 <div className="flex flex-col justify-center items-center px-5 py-8 bg-white w-full h-full max-md:px-5">
-                  {categoryImage && (
-                    <img
-                      loading="lazy"
-                      src={categoryImage}
-                      alt={categoryName}
-                      className="object-contain w-auto h-full"
-                    />
-                  )}
+                  {categoryImage &&
+                    (isSvg ? (
+                      <object
+                        data={categoryImage}
+                        type="image/svg+xml"
+                        className="object-contain w-auto h-full"
+                        aria-label={`Категория продукции: ${categoryName}`}
+                      >
+                        <img
+                          loading="lazy"
+                          src={categoryImage}
+                          alt={`Категория продукции: ${categoryName}`}
+                          className="object-contain w-auto h-full"
+                        />
+                      </object>
+                    ) : (
+                      <img
+                        loading="lazy"
+                        src={categoryImage}
+                        alt={`Категория продукции: ${categoryName}`}
+                        className="object-contain w-auto h-full"
+                      />
+                    ))}
                 </div>
               </div>
               <h2 className="mt-5 text-xl font-medium leading-6 text-center text-black pb-4">

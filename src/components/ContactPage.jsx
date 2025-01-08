@@ -12,7 +12,6 @@ export default function ContactPage() {
     const fetchContactData = async () => {
       try {
         const data = await getContactData();
-        console.log("Contact data:", data);
         if (data.data) {
           setContactData(data.data);
         }
@@ -27,9 +26,8 @@ export default function ContactPage() {
     fetchContactData();
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (!contactData) return <div>No contact data available</div>;
+  if (!contactData) return null;
 
   return (
     <>
@@ -43,7 +41,7 @@ export default function ContactPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-5xl font-bold leading-none text-black max-md:max-w-full max-md:text-4xl"
         >
-          {contactData.title}
+          {contactData?.title || "Контакты"}
         </motion.h1>
 
         <motion.div
@@ -52,9 +50,9 @@ export default function ContactPage() {
           transition={{ delay: 0.2 }}
           className="mt-16 text-2xl leading-8 text-black max-md:mt-10 max-md:max-w-full"
         >
-          <p>{contactData.companyName}</p>
-          <p>{contactData.ogrn}</p>
-          <p>{contactData.inn}</p>
+          <p>{contactData?.companyName || ""}</p>
+          <p>{contactData?.ogrn || ""}</p>
+          <p>{contactData?.inn || ""}</p>
         </motion.div>
 
         <motion.div
@@ -63,22 +61,22 @@ export default function ContactPage() {
           transition={{ delay: 0.4 }}
           className="flex flex-wrap gap-10 items-start mt-16 w-full leading-tight max-md:mt-10 max-md:max-w-full"
         >
-          {contactData.contactDetails.map((detail, index) => (
+          {contactData?.contactDetails?.map((detail, index) => (
             <motion.div
-              key={detail.id}
+              key={detail.id || index}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6 + index * 0.1 }}
               className="flex flex-col flex-1 shrink justify-center basis-0 min-w-[240px]"
             >
               <div className="text-2xl font-semibold text-gray-400">
-                {detail.value}
+                {detail?.value || ""}
               </div>
               <div className="flex gap-2.5 items-start mt-2.5">
                 <div className="font-medium text-neutral-900">
-                  {detail.label}
+                  {detail?.label || ""}
                 </div>
-                {detail.hasMap && detail.buttonMapLink && (
+                {detail?.hasMap && detail?.buttonMapLink && (
                   <a
                     href={detail.buttonMapLink}
                     target="_blank"
@@ -93,19 +91,21 @@ export default function ContactPage() {
           ))}
         </motion.div>
 
-        <iframe
-          src={contactData.mapUrl}
-          width="100%"
-          height="500"
-          frameBorder="0"
-          title="Hett Automotive Map"
-          className="mt-20 w-full"
-        />
+        {contactData?.mapUrl && (
+          <iframe
+            src={contactData.mapUrl}
+            width="100%"
+            height="500"
+            frameBorder="0"
+            title="Hett Automotive Map"
+            className="mt-20 w-full"
+          />
+        )}
       </motion.section>
       <ContactForm
-        formTitle={contactData.formTitle}
-        formDescription={contactData.formDescription}
-        formEmail={contactData.formEmail}
+        formTitle={contactData?.formTitle || "Связаться с нами"}
+        formDescription={contactData?.formDescription || ""}
+        formEmail={contactData?.formEmail || ""}
       />
     </>
   );
