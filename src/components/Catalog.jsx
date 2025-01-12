@@ -268,54 +268,33 @@ const Catalog = () => {
     fetchBrands();
   }, []);
 
-  // Fetch models when brand is selected
+  // Fetch all models independently
   useEffect(() => {
     const fetchModels = async () => {
-      if (selectedFilters.brand) {
-        try {
-          const modelsData = await getModels(selectedFilters.brand.id);
-          setModels(modelsData);
-          // Reset model and modification selections when brand changes
-          setSelectedFilters((prev) => ({
-            ...prev,
-            model: null,
-            modification: null,
-          }));
-        } catch (error) {
-          console.error("Error fetching models:", error);
-        }
-      } else {
-        setModels([]);
+      try {
+        const modelsData = await getModels();
+        setModels(modelsData);
+      } catch (error) {
+        console.error("Error fetching models:", error);
       }
     };
 
     fetchModels();
-  }, [selectedFilters.brand]);
+  }, []);
 
-  // Fetch modifications when model is selected
+  // Fetch all modifications independently
   useEffect(() => {
     const fetchModifications = async () => {
-      if (selectedFilters.model) {
-        try {
-          const modificationsData = await getModifications(
-            selectedFilters.model.id
-          );
-          setModifications(modificationsData);
-          // Reset modification selection when model changes
-          setSelectedFilters((prev) => ({
-            ...prev,
-            modification: null,
-          }));
-        } catch (error) {
-          console.error("Error fetching modifications:", error);
-        }
-      } else {
-        setModifications([]);
+      try {
+        const modificationsData = await getModifications();
+        setModifications(modificationsData);
+      } catch (error) {
+        console.error("Error fetching modifications:", error);
       }
     };
 
     fetchModifications();
-  }, [selectedFilters.model]);
+  }, []);
 
   const handleSearch = async () => {
     try {
@@ -371,43 +350,42 @@ const Catalog = () => {
       return;
     }
 
-    if (value === null) {
-      setSelectedFilters((prev) => {
-        const newFilters = { ...prev, [filterType]: null };
-        // If brand is deselected, also clear model and modification
-        if (filterType === "brand") {
-          newFilters.model = null;
-          newFilters.modification = null;
-        }
-        // If model is deselected, also clear modification
-        if (filterType === "model") {
-          newFilters.modification = null;
-        }
-        return newFilters;
-      });
-      return;
-    }
+    setSelectedFilters((prev) => {
+      const newFilters = { ...prev, [filterType]: value };
 
-    setSelectedFilters((prev) => ({
-      ...prev,
-      [filterType]: value,
-    }));
+      // Reset dependent filters
+      if (filterType === "brand") {
+        newFilters.model = null;
+        newFilters.modification = null;
+      } else if (filterType === "model") {
+        newFilters.modification = null;
+      }
+
+      return newFilters;
+    });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div></div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <Container>
       <div className="flex flex-col px-4 sm:px-8 md:px-16 lg:px-40 xl:px-80 pt-8 sm:pt-16 pb-10">
         {category && (
-          <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8">
-            {category.name}
-          </h1>
+          <div className="mb-6 sm:mb-8">
+            {category.image && (
+              <img
+                src={`${API_URL}${category.image.url}`}
+                alt={category.name}
+                className="w-full max-w-[300px] h-auto object-contain mb-4"
+              />
+            )}
+            <h1 className="text-3xl sm:text-4xl font-bold">{category.name}</h1>
+          </div>
         )}
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row z-0 gap-3 sm:gap-5 items-stretch sm:items-start w-full mb-6 sm:mb-8">
+        <div className="flex flex-col 2xl:flex-row z-0 gap-3 sm:gap-5 items-stretch sm:items-start w-full mb-6 sm:mb-8">
           <FilterDropdown
             title="Категория"
             icon="https://cdn.builder.io/api/v1/image/assets/TEMP/120bd9cdb085bbc6acafbf2a4db17046c1f3e859ef9cbdc28cc0bcbc572866a6"
@@ -421,7 +399,7 @@ const Catalog = () => {
             selectedOption={category?.name}
           />
           <FilterDropdown
-            title="Бренд"
+            title="Марка"
             icon="https://cdn.builder.io/api/v1/image/assets/TEMP/120bd9cdb085bbc6acafbf2a4db17046c1f3e859ef9cbdc28cc0bcbc572866a6"
             options={brands.map((brand) => brand.name)}
             onSelect={(value) =>
@@ -467,7 +445,11 @@ const Catalog = () => {
 
         {/* Products */}
         {products.length === 0 ? (
-          <div className="mt-8 sm:mt-16 text-center">No products found</div>
+          <div className="mt-8 sm:mt-16 text-center">
+            <div className="text-2xl my-32">
+              К сожалению, по вашему запросу ничего не найдено
+            </div>
+          </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mt-8 sm:mt-16">
             {products.map((product) => (

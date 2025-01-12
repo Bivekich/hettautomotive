@@ -28,7 +28,7 @@ export default function ProductionMore() {
   }, []);
 
   const handleCategoryClick = (category) => {
-    const url = `/production/${category.attributes.slug}`;
+    const url = `/catalog/${category.slug}`;
     navigate(url);
   };
 
@@ -53,15 +53,21 @@ export default function ProductionMore() {
         }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 w-full max-md:max-w-full"
       >
-        {categories.slice(0, 8).map((category, index) => {
+        {categories.slice(0, 8).map((category) => {
           const categoryName = category?.name;
           const categorySlug = category?.slug;
+          console.log("Raw category:", category);
+          console.log("Image data:", category?.image);
+
           const categoryImage = category?.image?.url
-            ? `${import.meta.env.VITE_API_URL || "http://localhost:1337"}${
-                category.image.url
-              }`
+            ? `${import.meta.env.VITE_STRAPI_API_URL}${category.image.url}`
             : null;
-          const isSvg = category?.image?.mime === "image/svg+xml";
+
+          console.log(
+            "VITE_STRAPI_API_URL:",
+            import.meta.env.VITE_STRAPI_API_URL
+          );
+          console.log("Final image URL:", categoryImage);
 
           if (!categoryName || !categorySlug) {
             console.warn("Category missing required fields:", category);
@@ -81,29 +87,21 @@ export default function ProductionMore() {
             >
               <div className="flex flex-col justify-center items-center h-[140px] w-full">
                 <div className="flex flex-col justify-center items-center px-5 py-8 bg-white w-full h-full max-md:px-5">
-                  {categoryImage &&
-                    (isSvg ? (
-                      <object
-                        data={categoryImage}
-                        type="image/svg+xml"
-                        className="object-contain w-auto h-full"
-                        aria-label={`Категория продукции: ${categoryName}`}
-                      >
-                        <img
-                          loading="lazy"
-                          src={categoryImage}
-                          alt={`Категория продукции: ${categoryName}`}
-                          className="object-contain w-auto h-full"
-                        />
-                      </object>
-                    ) : (
+                  {categoryImage && (
+                    <>
                       <img
                         loading="lazy"
                         src={categoryImage}
                         alt={`Категория продукции: ${categoryName}`}
                         className="object-contain w-auto h-full"
+                        onError={(e) => {
+                          console.error("Image failed to load:", e);
+                          console.log("Failed image URL:", e.target.src);
+                        }}
                       />
-                    ))}
+                      <div style={{ display: "none" }}>{categoryImage}</div>
+                    </>
+                  )}
                 </div>
               </div>
               <h2 className="mt-5 text-xl font-medium leading-6 text-center text-black pb-4">

@@ -120,25 +120,51 @@ export default function Footer() {
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 mt-8 md:mt-10">
           {/* Products Column */}
-          <div className="flex flex-col">
+          <div
+            className={`flex flex-col ${
+              categories.length > 4 ? "sm:col-span-2" : "sm:col-span-1"
+            } lg:col-span-1`}
+          >
             <h3 className="text-lg sm:text-xl font-bold leading-none text-white">
               Продукция
             </h3>
-            <nav
-              className={`grid ${
-                categories.length > 4 ? "grid-cols-2" : "grid-cols-1"
-              } gap-x-8 gap-y-3 md:gap-y-4 mt-6 md:mt-8 w-full text-sm sm:text-base leading-snug text-gray-400`}
+            <div
+              className={`flex ${
+                categories.length > 4 ? "flex-row gap-x-8" : "flex-col"
+              } mt-6 md:mt-8`}
             >
-              {categories.map((category) => (
-                <div
-                  key={category.id}
-                  onClick={() => handleNavigation(`/catalog/${category.slug}`)}
-                  className="hover:text-hett-1 transition-colors cursor-pointer"
-                >
-                  {category.name}
-                </div>
-              ))}
-            </nav>
+              {/* First column (first 4 categories) */}
+              <nav className="flex flex-col gap-y-3 md:gap-y-4 w-full text-sm sm:text-base leading-snug text-gray-400">
+                {categories.slice(0, 4).map((category) => (
+                  <div
+                    key={category.id}
+                    onClick={() =>
+                      handleNavigation(`/catalog/${category.slug}`)
+                    }
+                    className="hover:text-hett-1 transition-colors cursor-pointer"
+                  >
+                    {category.name}
+                  </div>
+                ))}
+              </nav>
+
+              {/* Second column (next 4 categories) */}
+              {categories.length > 4 && (
+                <nav className="flex flex-col gap-y-3 md:gap-y-4 w-full text-sm sm:text-base leading-snug text-gray-400">
+                  {categories.slice(4, 8).map((category) => (
+                    <div
+                      key={category.id}
+                      onClick={() =>
+                        handleNavigation(`/catalog/${category.slug}`)
+                      }
+                      className="hover:text-hett-1 transition-colors cursor-pointer"
+                    >
+                      {category.name}
+                    </div>
+                  ))}
+                </nav>
+              )}
+            </div>
           </div>
 
           {/* Information Column */}

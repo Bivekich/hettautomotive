@@ -27,9 +27,7 @@ export default function Geography() {
     fetchGeographyData();
   }, []);
 
-  const images = geographyData?.maps?.data || [
-    { url: geographyData?.map?.url },
-  ];
+  const images = geographyData?.maps || [];
   const hasMultipleImages = images.length > 1;
 
   const nextSlide = () => {
@@ -40,10 +38,26 @@ export default function Geography() {
     setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
   };
 
-  if (!geographyData) return null;
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px] bg-red-50 text-red-600">
+        <p>Error loading geography data: {error}</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px] bg-gray-50">
+        <p>Loading geography data...</p>
+      </div>
+    );
+  }
+
+  if (!geographyData || images.length === 0) return null;
 
   return (
-    <div className="relative overflow-x-hidden my-10">
+    <div className="relative overflow-x-hidden mt-10">
       <div className="absolute inset-0 bg-hett-2" />
 
       <Container>
@@ -75,10 +89,10 @@ export default function Geography() {
                   <img
                     loading="lazy"
                     src={`${import.meta.env.VITE_STRAPI_API_URL}${
-                      images[currentSlide].url
+                      images[currentSlide]?.url
                     }`}
                     alt={
-                      images[currentSlide].alternativeText ||
+                      images[currentSlide]?.alternativeText ||
                       `География поставок Hett Automotive ${
                         hasMultipleImages ? `(карта ${currentSlide + 1})` : ""
                       }`

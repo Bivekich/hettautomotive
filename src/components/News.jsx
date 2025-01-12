@@ -124,8 +124,6 @@ export default function News() {
               </motion.p>
 
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 onClick={handleReadMore}
                 className="flex gap-2 items-center self-start px-8 py-4 mt-10 bg-hett-1 hover:bg-green-600 transition-all min-h-[60px] max-md:px-5"
               >

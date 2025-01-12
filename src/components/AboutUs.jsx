@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { getAboutData } from "../services/api";
+import ReactMarkdown from "react-markdown";
 
 export default function AboutUs() {
   const [aboutData, setAboutData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -15,11 +15,9 @@ export default function AboutUs() {
         if (data.data && data.data.length > 0) {
           setAboutData(data.data[0]);
         }
-        setIsLoading(false);
       } catch (err) {
         console.error("Error fetching about data:", err);
         setError(err.message);
-        setIsLoading(false);
       }
     };
 
@@ -27,7 +25,6 @@ export default function AboutUs() {
   }, []);
 
   if (error) return <div>Error: {error}</div>;
-
   if (!aboutData) return null;
 
   return (
@@ -58,30 +55,31 @@ export default function AboutUs() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="mt-16 text-2xl leading-8 
-          xl:text-2xl xl:mt-16
-          lg:text-xl lg:mt-12
-          md:text-lg md:mt-10
-          max-md:mt-8 max-md:text-base"
+        className="mt-16 text-[22px] leading-8 
+           xl:mt-16
+           lg:mt-12
+          md:mt-10
+          max-md:mt-8"
       >
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
+          className="prose prose-[22px] max-w-none"
         >
-          {aboutData?.mainText || ""}
-        </motion.p>
+          <ReactMarkdown>{aboutData?.mainText || ""}</ReactMarkdown>
+        </motion.div>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-8 max-md:mt-6"
+          className="mt-8 max-md:mt-6 prose prose-[22px] max-w-none"
         >
-          {aboutData?.additionalText || ""}
-        </motion.p>
+          <ReactMarkdown>{aboutData?.additionalText || ""}</ReactMarkdown>
+        </motion.div>
       </motion.div>
     </section>
   );

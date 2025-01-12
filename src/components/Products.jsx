@@ -69,8 +69,6 @@ function ProductSection({ title, description, Link, image, index }) {
         href={Link}
         target="_blank"
         rel="noopener noreferrer"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
         className="flex gap-2 items-center self-start px-6 sm:px-8 py-3 sm:py-4 mt-6 sm:mt-10 lg:mt-16 bg-hett-1 min-h-[50px] sm:min-h-[60px] hover:bg-green-600 transition-all"
       >
         <span className="self-stretch my-auto text-base sm:text-lg font-semibold leading-tight text-white">

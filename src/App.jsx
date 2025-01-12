@@ -44,7 +44,6 @@ const HomePage = () => {
         <Geography />
         <News />
         <Products />
-        <YandexMap />
       </Container>
     </>
   );
