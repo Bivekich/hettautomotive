@@ -134,7 +134,14 @@ export default function Footer() {
               } mt-6 md:mt-8`}
             >
               {/* First column (first 4 categories) */}
-              <nav className="flex flex-col gap-y-3 md:gap-y-4 w-full text-sm sm:text-base leading-snug text-gray-400">
+              <nav
+                className="flex flex-col gap-y-3 md:gap-y-4 w-full leading-snug text-gray-400
+                2xl:text-base
+                xl:text-base
+                lg:text-sm
+                md:text-sm
+                max-md:text-xs"
+              >
                 {categories.slice(0, 4).map((category) => (
                   <div
                     key={category.id}
@@ -150,7 +157,14 @@ export default function Footer() {
 
               {/* Second column (next 4 categories) */}
               {categories.length > 4 && (
-                <nav className="flex flex-col gap-y-3 md:gap-y-4 w-full text-sm sm:text-base leading-snug text-gray-400">
+                <nav
+                  className="flex flex-col gap-y-3 md:gap-y-4 w-full leading-snug text-gray-400
+                  2xl:text-base
+                  xl:text-base
+                  lg:text-sm
+                  md:text-sm
+                  max-md:text-xs"
+                >
                   {categories.slice(4, 8).map((category) => (
                     <div
                       key={category.id}
@@ -199,11 +213,23 @@ export default function Footer() {
             <div className="flex flex-col justify-center w-full leading-tight">
               <a
                 href={`tel:${footerData?.phone || "+7 (495) 260 20 60"}`}
-                className="text-lg sm:text-xl font-semibold text-gray-400 hover:text-hett-1 transition-colors cursor-pointer"
+                className="text-gray-400 hover:text-hett-1 transition-colors cursor-pointer
+                  2xl:text-xl
+                  xl:text-lg
+                  lg:text-base
+                  md:text-base
+                  max-md:text-sm font-semibold"
               >
                 {footerData.phone}
               </a>
-              <div className="mt-2 sm:mt-2.5 text-xs sm:text-sm font-medium text-slate-50">
+              <div
+                className="mt-2 sm:mt-2.5 text-slate-50 font-medium
+                2xl:text-sm
+                xl:text-sm
+                lg:text-xs
+                md:text-xs
+                max-md:text-xs"
+              >
                 {footerData.phoneLabel}
               </div>
             </div>

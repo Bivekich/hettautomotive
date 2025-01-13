@@ -17,6 +17,7 @@ import {
   Route,
   Routes,
   useParams,
+  useLocation,
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Catalog from "./components/Catalog";
@@ -26,10 +27,45 @@ import ContactPage from "./components/ContactPage";
 import Container from "./components/Container";
 import NewsCatalog from "./components/NewsCatalog";
 import NewsArticle from "./components/NewsArticle";
-import { getCatalogProduct } from "./services/api";
+import { getCatalogProduct, getSeoBySlug } from "./services/api";
 import LoadingProvider from "./components/LoadingProvider";
 import { usePageTitle } from "./hooks/usePageTitle";
 import Products from "./components/Products";
+import SEO from "./components/SEO";
+
+// SEO wrapper component
+const PageSEO = () => {
+  const location = useLocation();
+  const [seoData, setSeoData] = useState(null);
+
+  useEffect(() => {
+    const fetchSEO = async () => {
+      const slug =
+        location.pathname === "/" ? "home" : location.pathname.slice(1);
+      const response = await getSeoBySlug(slug);
+      if (response.data) {
+        setSeoData(response.data.attributes.seoData);
+      }
+    };
+
+    fetchSEO();
+  }, [location.pathname]);
+
+  if (!seoData) return null;
+
+  return (
+    <SEO
+      metaTitle={seoData.metaTitle}
+      metaDescription={seoData.metaDescription}
+      metaImage={seoData.metaImage}
+      metaRobots={seoData.metaRobots}
+      metaViewport={seoData.metaViewport}
+      canonicalURL={seoData.canonicalURL}
+      keywords={seoData.keywords}
+      structuredData={seoData.structuredData}
+    />
+  );
+};
 
 // Page wrapper components
 const HomePage = () => {
@@ -152,6 +188,7 @@ const NewsArticlePage = () => {
 function AppContent() {
   return (
     <>
+      <PageSEO />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />

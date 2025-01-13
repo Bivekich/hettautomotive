@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Container from "./Container";
 import { getArticle, API_URL } from "../services/api";
+import SEO from "./SEO";
 
 export default function NewsArticle() {
   const { slug } = useParams();
@@ -30,8 +31,24 @@ export default function NewsArticle() {
   if (error) return null;
   if (!article) return null;
 
+  // Prepare SEO data
+  const seoData = article.seo || {
+    metaTitle: article.title,
+    metaDescription: article.description,
+    metaImage: article.image,
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      headline: article.title,
+      image: [`${API_URL}${article.image.url}`],
+      datePublished: article.date,
+      articleBody: article.content.replace(/<[^>]*>/g, ""),
+    },
+  };
+
   return (
     <Container>
+      <SEO {...seoData} />
       <article className="flex flex-col px-80 py-24 max-md:px-5">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}

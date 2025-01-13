@@ -494,3 +494,26 @@ export const getModificationsData = async (queryParams) => {
     throw error;
   }
 };
+
+// SEO endpoints
+export const getSeoBySlug = async (slug) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/seo/${slug}?populate=*`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching SEO data:", error);
+    return { data: null };
+  }
+};
+
+export const getContentTypeSeo = async (contentType, id) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/api/${contentType}/${id}?populate[seo][populate]=*`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error fetching content type SEO:", error);
+    return { data: null };
+  }
+};
