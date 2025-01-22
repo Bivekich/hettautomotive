@@ -59,7 +59,7 @@ export default function CompanyIntro() {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.3 }}
         className="mt-16 text-2xl leading-8 
-          xl:text-2xl xl:mt-16
+          xl:text-[22px] xl:mt-16
           lg:text-xl lg:mt-12
           md:text-lg md:mt-10
           max-md:mt-8 max-md:text-base"

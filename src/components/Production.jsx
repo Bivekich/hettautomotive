@@ -67,9 +67,9 @@ export default function Production() {
 
       <motion.div
         variants={containerVariants}
-        className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 w-full max-md:max-w-full"
+        className="mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 "
       >
-        {categories.slice(0, 4).map((category) => {
+        {categories.slice(0, 5).map((category) => {
           const categoryName = category?.name;
           const categorySlug = category?.slug;
           console.log("Raw category:", category);
@@ -117,7 +117,7 @@ export default function Production() {
                   )}
                 </div>
               </div>
-              <h2 className="mt-5 text-xl font-medium leading-6 text-center text-black pb-4">
+              <h2 className="mt-5 text-[18px] font-medium leading-6 text-center text-black pb-4">
                 {categoryName}
               </h2>
             </motion.div>

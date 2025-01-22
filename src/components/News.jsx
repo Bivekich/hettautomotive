@@ -39,8 +39,8 @@ export default function News() {
         const data = await getArticles(1, 5);
         if (data.data) {
           setArticles(data.data);
+          setSelectedArticle(data.data[0]);
           setFeaturedArticle(data.data[0]);
-          setSelectedArticle(data.data[1]);
         }
         setIsLoading(false);
       } catch (err) {
@@ -59,14 +59,12 @@ export default function News() {
   };
 
   const handleReadMore = () => {
-    navigate(`/news/${featuredArticle.slug}`);
+    navigate(`/news/${selectedArticle.slug}`);
   };
 
   if (isLoading) return null;
   if (error) return null;
   if (!articles.length) return null;
-
-  const listArticles = articles.slice(1, 5);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -108,8 +106,8 @@ export default function News() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 loading="lazy"
-                src={`${API_URL}${featuredArticle.image.url}`}
-                alt=""
+                src={`${API_URL}${selectedArticle.image.url}`}
+                alt={selectedArticle.title}
                 className="object-cover w-full h-[430px] max-md:max-w-full"
               />
 
@@ -120,7 +118,7 @@ export default function News() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="mt-10 text-xl leading-8 text-white max-md:max-w-full"
               >
-                {featuredArticle.description}
+                {selectedArticle.description}
               </motion.p>
 
               <motion.button
@@ -148,7 +146,7 @@ export default function News() {
               viewport={{ once: true }}
               className="flex flex-col flex-1 shrink basis-0 min-w-[240px] max-md:max-w-full"
             >
-              {listArticles.map((article, index) => (
+              {articles.map((article, index) => (
                 <div key={article.id} className={index > 0 ? "mt-8" : ""}>
                   <NewsItem
                     title={article.title}

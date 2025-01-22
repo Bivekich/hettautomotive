@@ -47,7 +47,7 @@ export default function AboutUs() {
           md:text-3xl
           max-md:text-2xl"
       >
-        {aboutData?.title || "О компании"}
+        {aboutData?.title || "О производителе Hett Automotive"}
       </motion.h1>
 
       <motion.div

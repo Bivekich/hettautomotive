@@ -35,11 +35,14 @@ export const getAdvantageData = async () => {
 };
 
 export const getGeographyData = async () => {
-  const response = await fetch(`${API_URL}/api/geography?populate=*`, {
-    headers: {
-      Authorization: `Bearer ${API_TOKEN}`,
-    },
-  });
+  const response = await fetch(
+    `${API_URL}/api/geography?populate[slides][populate][0]=map`,
+    {
+      headers: {
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
+    }
+  );
   if (!response.ok) throw new Error("Failed to fetch geography data");
   return response.json();
 };
@@ -516,4 +519,19 @@ export const getContentTypeSeo = async (contentType, id) => {
     console.error("Error fetching content type SEO:", error);
     return { data: null };
   }
+};
+
+export const searchProducts = async (query) => {
+  if (!query?.trim()) {
+    return { data: [] };
+  }
+
+  return getCatalogProducts({
+    filters: {
+      $or: [
+        { name: { $contains: query.trim() } },
+        { articleNumber: { $contains: query.trim() } },
+      ],
+    },
+  });
 };

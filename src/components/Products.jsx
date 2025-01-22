@@ -61,7 +61,7 @@ function ProductSection({ title, description, Link, image, index }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="mt-6 sm:mt-10 lg:mt-16 text-lg sm:text-xl lg:text-2xl leading-snug sm:leading-relaxed lg:leading-8 text-black"
+        className="mt-6 sm:mt-10 lg:mt-16 text-lg sm:text-xl lg:text-[22px] leading-snug sm:leading-relaxed lg:leading-8 text-black"
       >
         {description}
       </motion.p>

@@ -70,7 +70,7 @@ const Banner = () => {
 
   return (
     <div className="max-w-[2200px] mx-auto">
-      <div className="flex md:flex-row flex-col items-stretch md:items-center h-auto md:h-[650px] overflow-hidden">
+      <div className="flex md:flex-row flex-col items-stretch md:items-center h-auto md:h-[610px] overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={index}

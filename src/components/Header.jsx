@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Container from "./Container";
-import { getFooterData } from "../services/api";
+import search from "../assets/search.svg";
+import { getFooterData, searchProducts } from "../services/api";
+import debounce from "lodash/debounce";
 
 function MobileMenu({ isOpen, onClose }) {
   const navigate = useNavigate();
@@ -84,9 +86,76 @@ MobileMenu.propTypes = {
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef(null);
   const navigate = useNavigate();
   const headerRef = useRef(null);
   const [footerData, setFooterData] = useState(null);
+
+  // Handle clicks outside of search results
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Debounced search function
+  const debouncedSearch = useRef(
+    debounce(async (query) => {
+      if (!query.trim()) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
+
+      setIsSearching(true);
+      try {
+        const response = await searchProducts(query);
+
+        if (response?.data) {
+          const products = response.data.map((item) => ({
+            id: item.id,
+            name: item.name || "",
+            article: item.articleNumber || "",
+            slug: item.slug || "",
+            brand: item.brand?.name || "",
+            model: item.model?.name || "",
+          }));
+
+          // Additional client-side filtering to ensure matches
+          const validProducts = products.filter(
+            (p) =>
+              p.name.toLowerCase().includes(query.toLowerCase()) ||
+              p.article.toLowerCase().includes(query.toLowerCase())
+          );
+
+          setSearchResults(validProducts.slice(0, 5));
+        } else {
+          setSearchResults([]);
+        }
+      } catch (error) {
+        console.error("Error searching products:", error);
+        setSearchResults([]);
+      }
+      setIsSearching(false);
+    }, 300)
+  ).current;
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    setShowResults(true);
+    debouncedSearch(query);
+  };
 
   useEffect(() => {
     const fetchFooterData = async () => {
@@ -173,7 +242,7 @@ export default function Header() {
             <div className="flex gap-4 sm:gap-6 md:gap-8 items-center text-base sm:text-md font-bold leading-relaxed uppercase text-neutral-600">
               <a
                 href={`tel:${footerData?.headerPhone || "+7 (495) 260 20 60"}`}
-                className="text-lg font-bold leading-relaxed text-black hover:text-hett-1 transition-colors cursor-pointer whitespace-nowrap"
+                className="text-lg font-bold leading-relaxed text- hover:text-hett-1 transition-colors cursor-pointer whitespace-nowrap"
               >
                 {footerData?.headerPhone || null}
               </a>
@@ -222,7 +291,7 @@ export default function Header() {
         </div>
 
         {/* Navigation Bar - Hidden on Mobile */}
-        <nav className="hidden md:flex flex-wrap gap-4 sm:gap-6 md:gap-10 justify-between roboto-condensed-bold items-center px-4 sm:px-8 md:px-16 lg:px-40 xl:px-80 pb- sm:pb-6 md:py-5 w-full text-sm sm:text-md font-bold leading-relaxed uppercase">
+        <nav className="hidden md:flex flex-wrap gap-4 sm:gap-6 md:gap-10 justify-between roboto-condensed-bold items-center px-4 sm:px-8 md:px-16 lg:px-40 xl:px-80 pb- sm:pb-6 md:py-5 w-full text-sm sm:text-[17px] font-bold leading-relaxed uppercase">
           {/* Navigation Links - Hidden on Mobile */}
           <div className="hidden md:flex gap-6 lg:gap-10 items-center self-stretch my-auto text-neutral-600">
             <div
@@ -249,6 +318,52 @@ export default function Header() {
             >
               Контакты
             </div>
+          </div>
+          <div ref={searchRef} className="relative">
+            <div className="flex gap-1 items-center">
+              <img src={search} alt="Поиск" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => setShowResults(true)}
+                placeholder="ПОИСК"
+                className="placeholder:text-neutral-400 text-[17px] leading-tight p-2"
+              />
+              {isSearching && (
+                <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                  <div className="w-4 h-4 border-2 border-hett-1 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+            </div>
+
+            {/* Search Results Dropdown */}
+            {showResults && searchResults.length > 0 && (
+              <div className="absolute z-50 w-[300px] mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
+                {searchResults.map((product) => (
+                  <div
+                    key={product.id}
+                    onClick={() => {
+                      navigate(`/catalog/product/${product.slug}`);
+                      setShowResults(false);
+                      setSearchQuery("");
+                    }}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    <div className="font-medium text-neutral-600">
+                      {product.brand && product.model
+                        ? `${product.brand} ${product.model} - ${product.name}`
+                        : product.name}
+                    </div>
+                    {product.article && (
+                      <div className="text-sm text-gray-500">
+                        Артикул: {product.article}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </nav>
 
