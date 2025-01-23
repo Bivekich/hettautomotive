@@ -19,7 +19,7 @@ function ProductSection({ title, description, Link, image, index }) {
       }`}
     >
       {image ? (
-        <div className="flex flex-col justify-center items-center bg-gray-200 px-4 sm:px-6 md:px-9 pt-8 sm:pt-10 md:pt-12 pb-1">
+        <div className="relative h-[300px] sm:h-[400px] md:h-[460px]">
           <motion.img
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -28,7 +28,7 @@ function ProductSection({ title, description, Link, image, index }) {
             loading="lazy"
             src={`${import.meta.env.VITE_STRAPI_API_URL}${image.url}`}
             alt={title}
-            className="object-contain w-full aspect-[1.34]"
+            className="absolute inset-0 w-full h-full object-cover"
           />
         </div>
       ) : (

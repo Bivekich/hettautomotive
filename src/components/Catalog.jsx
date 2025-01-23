@@ -5,9 +5,6 @@ import {
   API_URL,
   getCatalogProducts,
   getProductCategory,
-  getBrands,
-  getModels,
-  getModifications,
   getProductCategories,
 } from "../services/api";
 import { motion } from "framer-motion";
@@ -19,6 +16,7 @@ const FilterDropdown = ({
   options = [],
   onSelect,
   selectedOption,
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,6 +41,7 @@ const FilterDropdown = ({
   );
 
   const handleOptionClick = (option) => {
+    if (disabled) return;
     // If clicking the already selected option, deselect it
     if (option === selectedOption) {
       onSelect(null);
@@ -58,8 +57,10 @@ const FilterDropdown = ({
       ref={dropdownRef}
     >
       <div
-        className="flex items-center h-11 px-4 border border-gray-400 cursor-pointer w-full"
-        onClick={() => setIsOpen(!isOpen)}
+        className={`flex items-center h-11 px-4 border border-gray-400 cursor-pointer w-full ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
       >
         <span
           className={`truncate text-base sm:text-lg font-bold ${
@@ -77,7 +78,7 @@ const FilterDropdown = ({
         />
       </div>
 
-      {isOpen && (
+      {isOpen && !disabled && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -135,6 +136,7 @@ FilterDropdown.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string),
   onSelect: PropTypes.func.isRequired,
   selectedOption: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 const ProductCard = ({ product }) => {
@@ -225,7 +227,7 @@ const Catalog = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
 
   // Filter states
@@ -233,74 +235,132 @@ const Catalog = () => {
   const [models, setModels] = useState([]);
   const [modifications, setModifications] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({
+    subcategory: null,
     brand: null,
     model: null,
     modification: null,
   });
 
-  // Fetch categories on component mount
+  // Fetch subcategories when category changes
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchCategoriesAndSubcategories = async () => {
       try {
         const response = await getProductCategories();
         if (response.data) {
-          setCategories(response.data);
+          const currentCategory = response.data.find(
+            (cat) => cat.slug === categorySlug
+          );
+          if (currentCategory?.subcategories) {
+            setSubcategories(currentCategory.subcategories);
+          }
         }
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
 
-    fetchCategories();
-  }, []);
+    if (categorySlug) {
+      fetchCategoriesAndSubcategories();
+    }
+  }, [categorySlug]);
 
-  // Fetch brands on component mount
+  // Fetch brands based on selected subcategory
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const brandsData = await getBrands();
-        setBrands(brandsData);
+        if (selectedFilters.subcategory) {
+          const filters = {
+            category: categorySlug,
+            subcategory: selectedFilters.subcategory.slug,
+          };
+          const productsData = await getCatalogProducts(filters);
+          const uniqueBrands = [
+            ...new Set(
+              productsData.data.map((product) => product.brand).filter(Boolean)
+            ),
+          ];
+          setBrands(uniqueBrands);
+        } else {
+          setBrands([]);
+        }
       } catch (error) {
         console.error("Error fetching brands:", error);
       }
     };
 
     fetchBrands();
-  }, []);
+  }, [categorySlug, selectedFilters.subcategory]);
 
-  // Fetch all models independently
+  // Fetch models based on selected brand
   useEffect(() => {
     const fetchModels = async () => {
       try {
-        const modelsData = await getModels();
-        setModels(modelsData);
+        if (selectedFilters.brand) {
+          const filters = {
+            category: categorySlug,
+            subcategory: selectedFilters.subcategory.slug,
+            brand: selectedFilters.brand.id,
+          };
+          const productsData = await getCatalogProducts(filters);
+          const uniqueModels = [
+            ...new Set(
+              productsData.data.map((product) => product.model).filter(Boolean)
+            ),
+          ];
+          setModels(uniqueModels);
+        } else {
+          setModels([]);
+        }
       } catch (error) {
         console.error("Error fetching models:", error);
       }
     };
 
     fetchModels();
-  }, []);
+  }, [categorySlug, selectedFilters.subcategory, selectedFilters.brand]);
 
-  // Fetch all modifications independently
+  // Fetch modifications based on selected model
   useEffect(() => {
     const fetchModifications = async () => {
       try {
-        const modificationsData = await getModifications();
-        setModifications(modificationsData);
+        if (selectedFilters.model) {
+          const filters = {
+            category: categorySlug,
+            subcategory: selectedFilters.subcategory.slug,
+            brand: selectedFilters.brand.id,
+            model: selectedFilters.model.id,
+          };
+          const productsData = await getCatalogProducts(filters);
+          const uniqueModifications = [
+            ...new Set(
+              productsData.data
+                .map((product) => product.modification)
+                .filter(Boolean)
+            ),
+          ];
+          setModifications(uniqueModifications);
+        } else {
+          setModifications([]);
+        }
       } catch (error) {
         console.error("Error fetching modifications:", error);
       }
     };
 
     fetchModifications();
-  }, []);
+  }, [
+    categorySlug,
+    selectedFilters.subcategory,
+    selectedFilters.brand,
+    selectedFilters.model,
+  ]);
 
   const handleSearch = async () => {
     try {
       setIsSearching(true);
       const filters = {
         category: categorySlug,
+        subcategory: selectedFilters.subcategory?.slug,
         brand: selectedFilters.brand?.id,
         model: selectedFilters.model?.id,
         modification: selectedFilters.modification?.id,
@@ -342,19 +402,15 @@ const Catalog = () => {
   }, [categorySlug]); // Only re-fetch when category changes
 
   const handleFilterSelect = (filterType, value) => {
-    if (filterType === "category") {
-      // Navigate to the selected category
-      if (value) {
-        navigate(`/catalog/${value.slug}`);
-      }
-      return;
-    }
-
     setSelectedFilters((prev) => {
       const newFilters = { ...prev, [filterType]: value };
 
       // Reset dependent filters
-      if (filterType === "brand") {
+      if (filterType === "subcategory") {
+        newFilters.brand = null;
+        newFilters.model = null;
+        newFilters.modification = null;
+      } else if (filterType === "brand") {
         newFilters.model = null;
         newFilters.modification = null;
       } else if (filterType === "model") {
@@ -387,16 +443,17 @@ const Catalog = () => {
         {/* Filters */}
         <div className="flex flex-col 2xl:flex-row z-0 gap-3 sm:gap-5 items-stretch sm:items-start w-full mb-6 sm:mb-8">
           <FilterDropdown
-            title="Категория"
+            title="Подкатегория"
             icon="https://cdn.builder.io/api/v1/image/assets/TEMP/120bd9cdb085bbc6acafbf2a4db17046c1f3e859ef9cbdc28cc0bcbc572866a6"
-            options={categories.map((cat) => cat.name)}
+            options={subcategories.map((subcat) => subcat.name)}
             onSelect={(value) =>
               handleFilterSelect(
-                "category",
-                categories.find((c) => c.name === value)
+                "subcategory",
+                subcategories.find((s) => s.name === value)
               )
             }
-            selectedOption={category?.name}
+            selectedOption={selectedFilters.subcategory?.name}
+            disabled={!categorySlug}
           />
           <FilterDropdown
             title="Марка"
@@ -409,6 +466,7 @@ const Catalog = () => {
               )
             }
             selectedOption={selectedFilters.brand?.name}
+            disabled={!selectedFilters.subcategory}
           />
           <FilterDropdown
             title="Модель"
@@ -421,6 +479,7 @@ const Catalog = () => {
               )
             }
             selectedOption={selectedFilters.model?.name}
+            disabled={!selectedFilters.brand}
           />
           <FilterDropdown
             title="Модификация"
@@ -433,13 +492,14 @@ const Catalog = () => {
               )
             }
             selectedOption={selectedFilters.modification?.name}
+            disabled={!selectedFilters.model}
           />
           <button
             onClick={handleSearch}
-            disabled={isSearching}
+            disabled={isSearching || !selectedFilters.subcategory}
             className="h-11 px-8 sm:px-12 py-2 font-semibold text-base sm:text-lg text-white bg-hett-1 hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSearching ? "Поиск..." : "Найти"}
+            {isSearching ? "Поиск" : "Найти"}
           </button>
         </div>
 

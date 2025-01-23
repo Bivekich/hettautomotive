@@ -131,7 +131,7 @@ export const getArticle = async (slug) => {
 export const getProductCategories = async () => {
   try {
     const response = await fetch(
-      `${API_URL}/api/product-categories?populate=*`,
+      `${API_URL}/api/product-categories?populate[image]=true&populate[subcategories][populate][image]=true`,
       {
         headers: {
           Authorization: `Bearer ${API_TOKEN}`,
@@ -146,11 +146,35 @@ export const getProductCategories = async () => {
     }
 
     const data = await response.json();
-    console.log("Raw category response:", JSON.stringify(data, null, 2));
-    console.log("Category attributes sample:", data.data?.[0]?.attributes);
     return data;
   } catch (error) {
     console.error("Error in getProductCategories:", error);
+    throw error;
+  }
+};
+
+export const getSubcategories = async (categorySlug) => {
+  try {
+    const url = categorySlug
+      ? `${API_URL}/api/subcategories?filters[parent_category][slug][$eq]=${categorySlug}&populate=*`
+      : `${API_URL}/api/subcategories?populate=*`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${API_TOKEN}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Error:", errorText);
+      throw new Error("Failed to fetch subcategories");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error in getSubcategories:", error);
     throw error;
   }
 };
@@ -200,6 +224,12 @@ export async function getCatalogProducts(filters = {}) {
     if (filters.category) {
       queryParams.append("filters[category][slug][$eq]", filters.category);
     }
+    if (filters.subcategory) {
+      queryParams.append(
+        "filters[subcategory][slug][$eq]",
+        filters.subcategory
+      );
+    }
     if (filters.brand) {
       queryParams.append("filters[brand][id][$eq]", filters.brand);
     }
@@ -219,6 +249,8 @@ export async function getCatalogProducts(filters = {}) {
     queryParams.append("populate[2]", "modification");
     queryParams.append("populate[3]", "images");
     queryParams.append("populate[4]", "specifications");
+    queryParams.append("populate[5]", "category");
+    queryParams.append("populate[6]", "subcategory");
 
     console.log(
       "Fetching catalog products with params:",

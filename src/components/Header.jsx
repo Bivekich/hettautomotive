@@ -328,7 +328,7 @@ export default function Header() {
                 onChange={handleSearchChange}
                 onFocus={() => setShowResults(true)}
                 placeholder="ПОИСК"
-                className="placeholder:text-neutral-400 text-[17px] leading-tight p-2"
+                className="placeholder:text-neutral-400 text-[17px] outline-none leading-tight p-2"
               />
               {isSearching && (
                 <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -344,7 +344,7 @@ export default function Header() {
                   <div
                     key={product.id}
                     onClick={() => {
-                      navigate(`/catalog/product/${product.slug}`);
+                      navigate(`/product/${product.slug}`);
                       setShowResults(false);
                       setSearchQuery("");
                     }}
