@@ -533,10 +533,19 @@ export const getModificationsData = async (queryParams) => {
 // SEO endpoints
 export const getSeoBySlug = async (slug) => {
   try {
-    const response = await axios.get(`${API_URL}/api/seo/${slug}?populate=*`);
-    return response;
+    const response = await fetch(
+      `${API_URL}/api/custom-pages?filters[slug][$eq]=${slug}&populate=*`,
+      {
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      }
+    );
+    if (!response.ok) throw new Error("Failed to fetch page data");
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error("Error fetching SEO data:", error);
+    console.error("Error fetching page data:", error);
     return { data: null };
   }
 };
@@ -544,11 +553,11 @@ export const getSeoBySlug = async (slug) => {
 export const getContentTypeSeo = async (contentType, id) => {
   try {
     const response = await axios.get(
-      `${API_URL}/api/${contentType}/${id}?populate[seo][populate]=*`
+      `${API_URL}/api/${contentType}/${id}?populate=*`
     );
     return response;
   } catch (error) {
-    console.error("Error fetching content type SEO:", error);
+    console.error("Error fetching content type:", error);
     return { data: null };
   }
 };

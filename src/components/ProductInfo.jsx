@@ -93,7 +93,7 @@ const Specifications = ({ specifications, articleNumber, whereToBuyLink }) => {
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/f7c1f9100bb18e9ca1e9905495b55ad4b051483e255022a5b0a947a18953cece"
           alt="Arrow"
-          className="object-contain self-stretch my-auto w-2.5 aspect-[1.25]"
+          className="object-contain self-stretch my-auto w-3.5 aspect-[1.25]"
         />
       </a>
     </div>
@@ -152,12 +152,12 @@ const ProductInfo = () => {
           />
         </div>
         {product.description && (
-          <div className="mt-12 sm:mt-16 lg:mt-20">
+          <div className="mt-12 sm:mt-16 lg:mt-20 w-full">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-none text-neutral-900 mb-6 sm:mb-8">
               Описание
             </h2>
-            <div className="text-base sm:text-lg lg:text-xl leading-relaxed text-black whitespace-pre-wrap max-w-[1000px]">
-              {product.description}
+            <div className="text-base sm:text-lg lg:text-xl leading-relaxed text-black break-words w-full max-w-[1000px] overflow-hidden">
+              {product.description?.toString()}
             </div>
           </div>
         )}

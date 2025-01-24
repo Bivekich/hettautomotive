@@ -8,13 +8,15 @@ export default function CatalogProductCard({ product, onClick }) {
       onClick={onClick}
       className="flex flex-wrap gap-8 items-start px-8 py-10 border border-solid border-zinc-400 max-md:px-5"
     >
-      <img
-        loading="lazy"
-        srcSet={`${product.image}?width=100 100w, ${product.image}?width=200 200w, ${product.image}?width=400 400w, ${product.image}?width=800 800w, ${product.image}?width=1200 1200w, ${product.image}?width=1600 1600w, ${product.image}?width=2000 2000w`}
-        src={product.image}
-        alt={`Товар ${product.name} - артикул ${product.articleNumber}`}
-        className="object-contain shrink-0 aspect-[1.04] w-[207px]"
-      />
+      <div className="flex-shrink-0 w-[207px] h-[207px]">
+        <img
+          loading="lazy"
+          srcSet={`${product.image}?width=100 100w, ${product.image}?width=200 200w, ${product.image}?width=400 400w, ${product.image}?width=800 800w, ${product.image}?width=1200 1200w, ${product.image}?width=1600 1600w, ${product.image}?width=2000 2000w`}
+          src={product.image}
+          alt={`Товар ${product.name} - артикул ${product.articleNumber}`}
+          className="w-full h-full object-cover"
+        />
+      </div>
       <div className="flex flex-col flex-1 shrink basis-0 min-w-[240px]">
         <div className="text-2xl font-extrabold leading-7 text-neutral-900">
           {product.name}

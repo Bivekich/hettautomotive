@@ -11,6 +11,7 @@ import AboutBanner from "./components/AboutBanner";
 import YandexMap from "./components/Map";
 import WhereToBuy from "./components/WhereToBuy";
 import SEOtext from "./components/SEOtext";
+import CustomPage from "./components/CustomPage";
 import "./index.css";
 import {
   BrowserRouter as Router,
@@ -40,11 +41,38 @@ const PageSEO = () => {
 
   useEffect(() => {
     const fetchSEO = async () => {
-      const slug =
-        location.pathname === "/" ? "home" : location.pathname.slice(1);
-      const response = await getSeoBySlug(slug);
-      if (response.data) {
-        setSeoData(response.data.attributes.seoData);
+      try {
+        const slug =
+          location.pathname === "/" ? "home" : location.pathname.slice(1);
+
+        // First try to get custom page data
+        const customPageResponse = await getSeoBySlug(slug);
+        if (customPageResponse.data?.[0]) {
+          setSeoData({
+            metaTitle: customPageResponse.data[0].title,
+            metaDescription: customPageResponse.data[0].content,
+            metaImage: customPageResponse.data[0].coverImage,
+            metaRobots: "index,follow",
+            canonicalURL: `${window.location.origin}${location.pathname}`,
+          });
+          return;
+        }
+
+        // If no custom page, try to get regular SEO data
+        const response = await fetch(
+          `${import.meta.env.VITE_STRAPI_API_URL}/api/seo/${slug}?populate=*`,
+          {
+            headers: {
+              Authorization: `Bearer ${import.meta.env.VITE_STRAPI_API_TOKEN}`,
+            },
+          }
+        );
+        const data = await response.json();
+        if (data?.data?.attributes?.seoData) {
+          setSeoData(data.data.attributes.seoData);
+        }
+      } catch (error) {
+        console.error("Error fetching SEO data:", error);
       }
     };
 
@@ -58,7 +86,7 @@ const PageSEO = () => {
       metaTitle={seoData.metaTitle}
       metaDescription={seoData.metaDescription}
       metaImage={seoData.metaImage}
-      metaRobots={seoData.metaRobots}
+      metaRobots={seoData.metaRobots || "index,follow"}
       metaViewport={seoData.metaViewport}
       canonicalURL={seoData.canonicalURL}
       keywords={seoData.keywords}
@@ -208,6 +236,7 @@ function AppContent() {
         <Route path="/news/:slug" element={<NewsArticlePage />} />
         <Route path="/contacts" element={<ContactsPage />} />
         <Route path="/catalog/:categorySlug?" element={<CatalogPage />} />
+        <Route path="/:slug" element={<CustomPage />} />
       </Routes>
       <Footer />
     </>
